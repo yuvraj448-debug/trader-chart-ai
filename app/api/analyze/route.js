@@ -10,7 +10,6 @@ export async function POST(req) {
     const formData = await req.formData();
     const image = formData.get("image");
     const question = formData.get("question") || "";
-    const previous = formData.get("previous") || "";
 
     if (!image) {
       return NextResponse.json(
@@ -22,44 +21,46 @@ export async function POST(req) {
     const bytes = await image.arrayBuffer();
     const base64Image = Buffer.from(bytes).toString("base64");
 
-    const response = await openai.responses.create({
-      model: "gpt-4o-mini",
-      input: [
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
         {
           role: "user",
           content: [
             {
-              type: "input_text",
-              text: `
-You are a professional institutional trader.
-Analyze price action, structure, liquidity, momentum & intent.
+              type: "text",
+              text: `You are a professional institutional trader.
+Analyze this chart deeply:
+- Market bias
+- Liquidity zones
+- Support & resistance
+- Trade scenarios
+- Risk management
 
-Previous analysis:
-${previous}
-
-User question:
-${question || "Give full market analysis"}
-`,
+${question ? "User question: " + question : ""}`,
             },
             {
-              type: "input_image",
-              image_base64: base64Image,
+              type: "image_url",
+              image_url: {
+                url: `data:image/png;base64,${base64Image}`,
+              },
             },
           ],
         },
       ],
+      max_tokens: 800,
     });
 
     const output =
-      response.output?.[0]?.content?.[0]?.text ||
-      "No analysis generated. Try again.";
+      completion.choices?.[0]?.message?.content ||
+      "No analysis generated.";
 
     return NextResponse.json({ analysis: output });
   } catch (err) {
-  console.error("FULL AI ERROR:", err);
-
-  return NextResponse.json(
-    { analysis: "AI error. Try again." },
-    { status: 500 }
-  );
+    console.error("FULL AI ERROR:", err);
+    return NextResponse.json(
+      { analysis: "AI error. Try again." },
+      { status: 500 }
+    );
+  }
 }
