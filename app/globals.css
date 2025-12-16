@@ -18,7 +18,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ===== BACKGROUND LAYER ===== */
+/* ===== BACKGROUND ROOT ===== */
 .bg-root {
   position: fixed;
   inset: 0;
@@ -39,15 +39,9 @@ body {
     radial-gradient(1px 1px at 50% 60%, #fff 50%, transparent 51%);
   background-size: 200px 200px;
   opacity: 0.35;
-  animation: starsMove 120s linear infinite;
 }
 
-@keyframes starsMove {
-  from { transform: translateY(0); }
-  to { transform: translateY(-200px); }
-}
-
-/* ===== RING HOLDER (NEVER MOVES POSITION) ===== */
+/* ===== RINGS HOLDER (LOCKED CENTER) ===== */
 .bg-rings {
   position: absolute;
   top: 50%;
@@ -55,29 +49,49 @@ body {
   width: 900px;
   height: 900px;
   transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
-/* ===== ROTATION (PURE ROTATE ONLY) ===== */
-.bg-rings svg {
-  width: 100%;
-  height: 100%;
-  animation: rotateRings 50s linear infinite;
+/* ===== INDIVIDUAL RINGS ===== */
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.2px solid rgba(56,189,248,0.55);
+  filter: drop-shadow(0 0 12px rgba(56,189,248,0.6));
 }
 
-.bg-rings circle {
-  fill: none;
-  stroke: #38bdf8;
-  stroke-width: 1.2;
-  opacity: 0.4;
-  filter: drop-shadow(0 0 10px rgba(56,189,248,0.6));
+.ring.one {
+  animation: spin1 60s linear infinite;
 }
 
-@keyframes rotateRings {
+.ring.two {
+  inset: 40px;
+  animation: spin2 90s linear infinite reverse;
+}
+
+.ring.three {
+  inset: 80px;
+  animation: spin3 120s linear infinite;
+}
+
+/* ===== PURE ROTATION (NO TRANSLATE) ===== */
+@keyframes spin1 {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* ===== MOBILE FIX ===== */
+@keyframes spin2 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes spin3 {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===== MOBILE SAFE ===== */
 @media (max-width: 768px) {
   .bg-rings {
     width: 700px;
