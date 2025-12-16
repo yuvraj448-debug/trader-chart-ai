@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Features from "./components/Features";
 
 export default function Home() {
   const [image, setImage] = useState(null);
@@ -19,10 +20,7 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("image", image);
-    formData.append(
-      "question",
-      isFollowUp ? followUp : question
-    );
+    formData.append("question", isFollowUp ? followUp : question);
     formData.append("previous", analysis);
 
     const res = await fetch("/api/analyze", {
@@ -31,18 +29,24 @@ export default function Home() {
     });
 
     const data = await res.json();
-    setAnalysis(isFollowUp ? analysis + "\n\n" + data.analysis : data.analysis);
+    setAnalysis(
+      isFollowUp
+        ? analysis + "\n\n" + data.analysis
+        : data.analysis
+    );
     setFollowUp("");
     setLoading(false);
   };
 
   return (
     <main className="relative z-10 flex min-h-screen flex-col items-center justify-start px-4 pt-20 text-white">
+      {/* HERO */}
       <h1 className="text-3xl font-bold mb-2">Trader Chart AI</h1>
-      <p className="text-gray-400 mb-6 text-center">
+      <p className="text-gray-400 mb-6 text-center max-w-xl">
         Upload any chart screenshot. Let AI read the market like a pro.
       </p>
 
+      {/* AI CORE */}
       <div className="w-full max-w-xl bg-black/60 border border-white/10 rounded-2xl p-4 backdrop-blur">
         <input
           type="file"
@@ -68,6 +72,7 @@ export default function Home() {
         </button>
       </div>
 
+      {/* ANALYSIS OUTPUT */}
       {analysis && (
         <div className="mt-6 w-full max-w-xl bg-black/70 border border-white/10 rounded-2xl p-4 whitespace-pre-wrap">
           {analysis}
@@ -91,6 +96,9 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* FEATURES SECTION */}
+      <Features />
     </main>
   );
 }
