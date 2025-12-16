@@ -13,12 +13,12 @@ export async function POST(req) {
 
     if (!imageFile) {
       return NextResponse.json(
-        { analysis: "No image uploaded." },
+        { analysis: "❌ No image uploaded." },
         { status: 400 }
       );
     }
 
-    // Convert image → base64
+    // Convert image to base64
     const bytes = await imageFile.arrayBuffer();
     const base64Image = Buffer.from(bytes).toString("base64");
 
@@ -31,19 +31,41 @@ export async function POST(req) {
             {
               type: "input_text",
               text: `
-You are a professional institutional trader.
+You are a professional institutional trader and smart money analyst.
 
 Analyze ANY trading chart screenshot (forex, crypto, stocks, indices).
+Give a premium, clean, confident analysis with emojis.
 
-Give:
-• Market bias
-• Liquidity zones
-• Key support & resistance
-• Possible scenarios
-• Entry / SL / TP ideas
-• Risk management
+STRICT FORMAT:
 
-User question: ${question || "No extra question"}
+📊 **Market Bias**
+- Direction + reasoning
+
+💧 **Liquidity Zones**
+- Buy-side liquidity
+- Sell-side liquidity
+- Stop hunts / inducements
+
+📈 **Key Support & Resistance**
+- Major support levels
+- Major resistance levels
+
+🎯 **Trade Scenarios**
+1️⃣ Bullish scenario
+2️⃣ Bearish scenario
+3️⃣ Range / consolidation scenario
+
+🛑 **Risk Management**
+- Invalidation level
+- Risk notes
+
+🧠 **Smart Money Insight**
+- One institutional-level insight
+
+Answer the user's question clearly if provided.
+
+User Question:
+"${question}"
               `,
             },
             {
@@ -56,14 +78,13 @@ User question: ${question || "No extra question"}
     });
 
     const output =
-      response.output_text || "No analysis returned.";
+      response.output_text || "⚠️ No analysis returned by AI.";
 
     return NextResponse.json({ analysis: output });
-
   } catch (error) {
     console.error("AI ERROR:", error);
     return NextResponse.json(
-      { analysis: "AI error. Try again." },
+      { analysis: "❌ AI error. Please try again." },
       { status: 500 }
     );
   }
