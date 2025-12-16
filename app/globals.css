@@ -2,96 +2,215 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ======================
+/* ===============================
    THEME VARIABLES
-====================== */
+================================ */
 :root {
   --bg: #050505;
   --card: #0b0b0b;
   --border: #1a1a1a;
   --text: #eaeaea;
   --muted: #9ca3af;
+  --accent: #22c55e;
 }
 
-/* ======================
-   GLOBAL BODY
-====================== */
+/* ===============================
+   GLOBAL RESET
+================================ */
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-inter), system-ui, sans-serif;
   overflow-x: hidden;
 }
 
-/* ======================
-   ANALYSIS CARD
-====================== */
-.analysis-box {
-  background: linear-gradient(180deg, #0b0b0b, #070707);
+/* ===============================
+   STAR CANVAS BACKGROUND
+================================ */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===============================
+   PAGE WRAPPER
+================================ */
+.main-wrapper {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+/* ===============================
+   CARD / GLASS PANEL
+================================ */
+.card {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 15, 15, 0.9),
+    rgba(5, 5, 5, 0.9)
+  );
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 20px 60px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(12px);
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
 }
 
-/* ======================
-   INPUTS
-====================== */
-input[type='file'] {
-  font-size: 13px;
+/* ===============================
+   HEADINGS
+================================ */
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 18px;
   color: var(--muted);
+  font-weight: 400;
 }
 
-input[type='text'] {
-  font-family: var(--font-inter);
-}
-
-/* ======================
-   RESULT TEXT (FIXED)
-====================== */
-.ai-result {
-  margin-top: 16px;
-  font-family: var(--font-inter);
+/* ===============================
+   INPUTS
+================================ */
+input[type="file"],
+input[type="text"],
+textarea {
+  width: 100%;
+  background: #080808;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: var(--text);
   font-size: 14px;
-  line-height: 1.75;
-  color: #e5e7eb;
-  animation: fadeIn 0.4s ease forwards;
+  outline: none;
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: #6b7280;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #2a2a2a;
+}
+
+/* ===============================
+   BUTTON
+================================ */
+button {
+  width: 100%;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.08);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   AI ANALYSIS OUTPUT BOX
+================================ */
+.analysis-box {
+  margin-top: 24px;
+  background: linear-gradient(
+    180deg,
+    #0b0b0b,
+    #070707
+  );
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  line-height: 1.7;
   white-space: pre-wrap;
 }
 
-/* ======================
-   TYPING CARET
-====================== */
-.typing-caret::after {
-  content: '▍';
-  margin-left: 2px;
-  animation: blink 1s infinite;
+/* ===============================
+   AI LOADING GLOW
+================================ */
+.ai-loading {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--accent);
+  font-size: 14px;
 }
 
-@keyframes blink {
-  0%,
-  50%,
+.ai-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  position: relative;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.ai-circle::after {
+  content: '';
+  position: absolute;
+  inset: 30px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.15);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
   100% {
-    opacity: 1;
-  }
-  25%,
-  75% {
-    opacity: 0;
+    transform: scale(0.95);
+    opacity: 0.6;
   }
 }
 
-/* ======================
-   FADE IN
-====================== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ===============================
+   SCROLLBAR (OPTIONAL FLEX)
+================================ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f1f1f;
+  border-radius: 10px;
 }
