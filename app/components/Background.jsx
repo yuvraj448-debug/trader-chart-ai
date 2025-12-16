@@ -56,7 +56,7 @@ export default function Background() {
   return (
     <canvas
       id="bg-canvas"
-      className="fixed top-0 left-0 w-full h-full z-0 opacity-40"
+      className="fixed inset-0 z-0 opacity-40 pointer-events-none"
     />
   )
 }
