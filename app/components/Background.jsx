@@ -1,9 +1,12 @@
 'use client'
+
 import { useEffect } from 'react'
 
 export default function Background() {
   useEffect(() => {
     const canvas = document.getElementById('bg-canvas')
+    if (!canvas) return
+
     const ctx = canvas.getContext('2d')
 
     const resize = () => {
@@ -14,35 +17,35 @@ export default function Background() {
     resize()
     window.addEventListener('resize', resize)
 
-    const stars = Array.from({ length: 140 }).map(() => ({
+    const stars = Array.from({ length: 160 }).map(() => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 1.3,
-      d: Math.random() * 0.6 + 0.2,
+      r: Math.random() * 1.2,
+      s: Math.random() * 0.6 + 0.2,
     }))
 
-    function draw() {
+    const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = '#ffffff'
       ctx.beginPath()
 
-      stars.forEach(s => {
-        ctx.moveTo(s.x, s.y)
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+      stars.forEach((star) => {
+        ctx.moveTo(star.x, star.y)
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2)
       })
 
       ctx.fill()
 
-      stars.forEach(s => {
-        s.y += s.d
-        if (s.y > canvas.height) {
-          s.y = 0
-          s.x = Math.random() * canvas.width
+      stars.forEach((star) => {
+        star.y += star.s
+        if (star.y > canvas.height) {
+          star.y = 0
+          star.x = Math.random() * canvas.width
         }
       })
     }
 
-    const interval = setInterval(draw, 40)
+    const interval = setInterval(draw, 30)
 
     return () => {
       clearInterval(interval)
@@ -53,7 +56,7 @@ export default function Background() {
   return (
     <canvas
       id="bg-canvas"
-      className="fixed top-0 left-0 w-full h-full -z-10 opacity-40"
+      className="fixed top-0 left-0 w-full h-full z-0 opacity-40"
     />
   )
 }
