@@ -8,18 +8,18 @@ const openai = new OpenAI({
 export async function POST(req) {
   try {
     const formData = await req.formData();
-    const imageFile = formData.get("image");
+    const image = formData.get("image");
     const question = formData.get("question") || "";
+    const previous = formData.get("previous") || "";
 
-    if (!imageFile) {
+    if (!image) {
       return NextResponse.json(
-        { analysis: "❌ No image uploaded." },
+        { analysis: "No image provided." },
         { status: 400 }
       );
     }
 
-    // Convert image to base64
-    const bytes = await imageFile.arrayBuffer();
+    const bytes = await image.arrayBuffer();
     const base64Image = Buffer.from(bytes).toString("base64");
 
     const response = await openai.responses.create({
@@ -31,60 +31,35 @@ export async function POST(req) {
             {
               type: "input_text",
               text: `
-You are a professional institutional trader and smart money analyst.
+You are a professional institutional trader.
+Analyze ONLY price action, structure, liquidity, momentum, and smart money intent.
+Do NOT mention indicators unless clearly visible.
 
-Analyze ANY trading chart screenshot (forex, crypto, stocks, indices).
-Give a premium, clean, confident analysis with emojis.
+Previous analysis:
+${previous}
 
-STRICT FORMAT:
+User question:
+${question || "Give full market analysis"}
 
-📊 **Market Bias**
-- Direction + reasoning
-
-💧 **Liquidity Zones**
-- Buy-side liquidity
-- Sell-side liquidity
-- Stop hunts / inducements
-
-📈 **Key Support & Resistance**
-- Major support levels
-- Major resistance levels
-
-🎯 **Trade Scenarios**
-1️⃣ Bullish scenario
-2️⃣ Bearish scenario
-3️⃣ Range / consolidation scenario
-
-🛑 **Risk Management**
-- Invalidation level
-- Risk notes
-
-🧠 **Smart Money Insight**
-- One institutional-level insight
-
-Answer the user's question clearly if provided.
-
-User Question:
-"${question}"
-              `,
+Respond in clean sections with emojis.
+`,
             },
             {
               type: "input_image",
-              image_url: `data:image/png;base64,${base64Image}`,
+              image_base64: base64Image,
             },
           ],
         },
       ],
     });
 
-    const output =
-      response.output_text || "⚠️ No analysis returned by AI.";
-
-    return NextResponse.json({ analysis: output });
-  } catch (error) {
-    console.error("AI ERROR:", error);
+    return NextResponse.json({
+      analysis: response.output_text,
+    });
+  } catch (err) {
+    console.error(err);
     return NextResponse.json(
-      { analysis: "❌ AI error. Please try again." },
+      { analysis: "AI error. Try again." },
       { status: 500 }
     );
   }
