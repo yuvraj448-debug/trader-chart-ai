@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 
 export default function Home() {
@@ -28,74 +27,56 @@ export default function Home() {
       })
 
       const data = await res.json()
-      setResult(data.analysis || 'No response from AI')
+      setResult(data.analysis || 'No analysis returned.')
     } catch (err) {
-      setResult('Something went wrong. Try again.')
+      setResult('AI error. Try again.')
     }
 
     setLoading(false)
   }
 
   return (
-    <main style={{
-      minHeight: '100vh',
-      background: '#0b0b0b',
-      color: '#fff',
-      padding: '20px',
-      fontFamily: 'Arial',
-    }}>
-      <h1 style={{ fontSize: '26px', marginBottom: '15px' }}>
-        Trader Chart AI
-      </h1>
+    <main className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl">
+        <h1 className="text-2xl font-semibold text-center mb-6">
+          Trader Chart AI
+        </h1>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setImage(e.target.files[0])}
-        style={{ marginBottom: '12px' }}
-      />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="w-full mb-4 text-sm"
+        />
 
-      <input
-        type="text"
-        placeholder="Ask anything about this chart (optional)..."
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        style={{
-          width: '100%',
-          padding: '10px',
-          marginBottom: '12px',
-          background: '#111',
-          color: '#fff',
-          border: '1px solid #333',
-          borderRadius: '6px',
-        }}
-      />
+        <input
+          type="text"
+          placeholder="Ask anything about this chart (optional)..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className="w-full mb-4 px-4 py-3 rounded-lg bg-black/40 border border-white/10 focus:outline-none"
+        />
 
-      <button
-        onClick={submitAnalysis}
-        style={{
-          width: '100%',
-          padding: '12px',
-          background: '#fff',
-          color: '#000',
-          fontWeight: 'bold',
-          borderRadius: '8px',
-        }}
-      >
-        {loading ? 'Analyzing chart…' : 'Analyze Chart'}
-      </button>
+        <button
+          onClick={submitAnalysis}
+          disabled={loading}
+          className="w-full py-3 rounded-lg bg-white text-black font-semibold hover:opacity-90 transition"
+        >
+          {loading ? 'Analyzing...' : 'Analyze Chart'}
+        </button>
 
-      {result && (
-        <pre style={{
-          marginTop: '20px',
-          background: '#111',
-          padding: '15px',
-          borderRadius: '8px',
-          whiteSpace: 'pre-wrap',
-        }}>
-          {result}
-        </pre>
-      )}
+        {loading && (
+          <div className="mt-6 text-center text-sm text-gray-400 animate-pulse">
+            Reading price action & liquidity...
+          </div>
+        )}
+
+        {result && (
+          <pre className="mt-6 whitespace-pre-wrap text-sm bg-black/40 p-4 rounded-lg border border-white/10">
+            {result}
+          </pre>
+        )}
+      </div>
     </main>
   )
 }
