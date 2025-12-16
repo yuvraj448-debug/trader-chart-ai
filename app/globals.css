@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===== RESET ===== */
 * {
   box-sizing: border-box;
 }
@@ -16,85 +15,5 @@ body {
   background: #050505;
   color: #eaeaea;
   overflow-x: hidden;
-}
-
-/* ===== BACKGROUND ROOT ===== */
-.bg-root {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(circle at center, #0b0b0b, #000);
-  overflow: hidden;
-}
-
-/* ===== STARS ===== */
-.bg-stars {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 10% 20%, #fff 50%, transparent 51%),
-    radial-gradient(1px 1px at 30% 80%, #fff 50%, transparent 51%),
-    radial-gradient(1px 1px at 70% 40%, #fff 50%, transparent 51%),
-    radial-gradient(1px 1px at 90% 10%, #fff 50%, transparent 51%),
-    radial-gradient(1px 1px at 50% 60%, #fff 50%, transparent 51%);
-  background-size: 200px 200px;
-  opacity: 0.35;
-}
-
-/* ===== RINGS HOLDER (LOCKED CENTER) ===== */
-.bg-rings {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 900px;
-  height: 900px;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-/* ===== INDIVIDUAL RINGS ===== */
-.ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 1.2px solid rgba(56,189,248,0.55);
-  filter: drop-shadow(0 0 12px rgba(56,189,248,0.6));
-}
-
-.ring.one {
-  animation: spin1 60s linear infinite;
-}
-
-.ring.two {
-  inset: 40px;
-  animation: spin2 90s linear infinite reverse;
-}
-
-.ring.three {
-  inset: 80px;
-  animation: spin3 120s linear infinite;
-}
-
-/* ===== PURE ROTATION (NO TRANSLATE) ===== */
-@keyframes spin1 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes spin2 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
-}
-
-@keyframes spin3 {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ===== MOBILE SAFE ===== */
-@media (max-width: 768px) {
-  .bg-rings {
-    width: 700px;
-    height: 700px;
-  }
+  font-family: system-ui, sans-serif;
 }
