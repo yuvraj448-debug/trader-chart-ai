@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
   const [image, setImage] = useState(null)
   const [question, setQuestion] = useState('')
   const [result, setResult] = useState('')
+  const [displayText, setDisplayText] = useState('')
   const [loading, setLoading] = useState(false)
 
   const submitAnalysis = async () => {
@@ -16,6 +17,7 @@ export default function Home() {
 
     setLoading(true)
     setResult('')
+    setDisplayText('')
 
     const formData = new FormData()
     formData.append('image', image)
@@ -31,17 +33,29 @@ export default function Home() {
     setLoading(false)
   }
 
+  /* TYPING EFFECT */
+  useEffect(() => {
+    if (!result) return
+
+    let i = 0
+    const interval = setInterval(() => {
+      setDisplayText((prev) => prev + result[i])
+      i++
+      if (i >= result.length) clearInterval(interval)
+    }, 8)
+
+    return () => clearInterval(interval)
+  }, [result])
+
   return (
-    <main className="relative min-h-screen flex flex-col items-center justify-start pt-24 px-4 text-white z-10">
-      
-      {/* TITLE */}
+    <main className="relative min-h-screen flex flex-col items-center pt-24 px-4 z-10">
+
       <h1 className="text-3xl font-bold mb-2">Trader Chart AI</h1>
       <p className="text-gray-400 text-sm mb-8 text-center max-w-sm">
         Upload any chart screenshot. Let AI read the market like a pro.
       </p>
 
-      {/* ANALYZE CARD */}
-      <div className="analysis-box w-full max-w-md mb-16">
+      <div className="analysis-box w-full max-w-md">
         <input
           type="file"
           accept="image/*"
@@ -65,29 +79,26 @@ export default function Home() {
           {loading ? 'Analyzing...' : 'Analyze Chart'}
         </button>
 
-        {result && (
-          <pre className="mt-4 text-xs text-gray-300 whitespace-pre-wrap">
-            {result}
-          </pre>
+        {displayText && (
+          <div className="ai-result typing-caret">
+            {displayText}
+          </div>
         )}
       </div>
 
-      {/* 🔥 AI CORE SECTION (REPLACES EMPTY SPACE) */}
-      <section className="relative flex flex-col items-center justify-center text-center mb-32">
-        
-        {/* AI GLOW */}
-        <div className="relative w-56 h-56 flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full bg-green-500 opacity-20 blur-3xl animate-pulse"></div>
-          <div className="relative w-36 h-36 rounded-full border border-green-400 flex items-center justify-center">
+      {/* AI CORE */}
+      <div className="mt-24 flex flex-col items-center">
+        <div className="relative w-40 h-40">
+          <div className="absolute inset-0 bg-green-500 opacity-20 blur-3xl animate-pulse rounded-full"></div>
+          <div className="relative w-full h-full border border-green-400 rounded-full flex items-center justify-center">
             <div className="w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
           </div>
         </div>
 
-        {/* TEXT */}
-        <p className="mt-6 text-sm text-green-400 tracking-wide animate-pulse">
+        <p className="mt-6 text-xs text-green-400 tracking-wide animate-pulse">
           AI is analyzing structure, liquidity, momentum & intent
         </p>
-      </section>
+      </div>
     </main>
   )
 }
