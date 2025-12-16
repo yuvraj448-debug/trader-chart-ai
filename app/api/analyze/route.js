@@ -32,16 +32,13 @@ export async function POST(req) {
               type: "input_text",
               text: `
 You are a professional institutional trader.
-Analyze ONLY price action, structure, liquidity, momentum, and smart money intent.
-Do NOT mention indicators unless clearly visible.
+Analyze price action, structure, liquidity, momentum & intent.
 
 Previous analysis:
 ${previous}
 
 User question:
 ${question || "Give full market analysis"}
-
-Respond in clean sections with emojis.
 `,
             },
             {
@@ -53,11 +50,13 @@ Respond in clean sections with emojis.
       ],
     });
 
-    return NextResponse.json({
-      analysis: response.output_text,
-    });
+    const output =
+      response.output?.[0]?.content?.[0]?.text ||
+      "No analysis generated. Try again.";
+
+    return NextResponse.json({ analysis: output });
   } catch (err) {
-    console.error(err);
+    console.error("AI ERROR:", err);
     return NextResponse.json(
       { analysis: "AI error. Try again." },
       { status: 500 }
