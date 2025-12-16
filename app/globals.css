@@ -98,3 +98,36 @@ body {
   from { transform: rotate(360deg); }
   to { transform: rotate(0deg); }
 }
+/* ===== AI BACKGROUND FIX ===== */
+
+.ai-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #050505;
+  overflow: hidden;
+}
+
+/* STAR FIELD */
+.stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.6), transparent),
+    radial-gradient(1px 1px at 80% 40%, rgba(255,255,255,.5), transparent),
+    radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 70% 90%, rgba(255,255,255,.3), transparent);
+  background-size: 100% 100%;
+  opacity: 0.8;
+}
+
+/* AI CORE */
+.ai-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140vmin;
+  height: 140vmin;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
