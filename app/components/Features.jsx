@@ -1,58 +1,83 @@
-"use client";
-
 export default function Features() {
-  const features = [
-    {
-      title: "Upload Any Chart Screenshot",
-      desc: "Forex, Crypto, Indices, or Stocks. No symbols, no timeframes.",
-    },
-    {
-      title: "AI Reads Market Structure",
-      desc: "Trend, bias, liquidity zones, and momentum explained clearly.",
-    },
-    {
-      title: "Beginner Friendly",
-      desc: "No indicators. No strategies. Just price action clarity.",
-    },
-    {
-      title: "Institutional Style Analysis",
-      desc: "Smart money concepts in simple language.",
-    },
-    {
-      title: "Fast & Private",
-      desc: "Instant analysis. No chart is stored.",
-    },
-    {
-      title: "Ask Follow-up Questions",
-      desc: "Chat with AI on the same chart for deeper insight.",
-    },
-  ];
-
   return (
-    <section className="relative z-10 w-full mt-32 border-t border-white/10 pt-20">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-semibold text-center mb-4">
-          Why Trader Chart AI?
+    <section className="relative z-10 mt-40 px-6 py-24 text-white">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-4">
+          Why Traders Use Trader Chart AI
         </h2>
 
-        <p className="text-center text-gray-400 max-w-2xl mx-auto mb-16">
-          Built for traders who want clarity, not complexity.
+        <p className="text-center text-gray-400 mb-16 max-w-2xl mx-auto">
+          Built for serious traders who want clarity, precision, and confidence
+          before entering a trade.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((item, idx) => (
-            <div
-              key={idx}
-              className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6"
-            >
-              <h3 className="text-lg font-semibold mb-2">
-                {item.title}
-              </h3>
-              <p className="text-sm text-gray-400">
-                {item.desc}
+        <div className="grid gap-8 md:grid-cols-3">
+          <div className="bg-black/60 border border-white/10 rounded-2xl p-6">
+            <h3 className="text-xl font-semibold mb-2">
+              Smart Chart Reading
+            </h3>
+            <p className="text-gray-400">
+              AI detects trend, structure, liquidity sweeps, and key levels from
+              your chart screenshots.
+            </p>
+          </div>
+
+          <div className="bg-black/60 border border-white/10 rounded-2xl p-6">
+            <h3 className="text-xl font-semibold mb-2">
+              Follow-Up Questions
+            </h3>
+            <p className="text-gray-400">
+              Ask deeper questions about entries, bias, stop loss and targets
+              without reuploading charts.
+            </p>
+          </div>
+
+          <div className="bg-black/60 border border-white/10 rounded-2xl p-6">
+            <h3 className="text-xl font-semibold mb-2">
+              Built for Traders
+            </h3>
+            <p className="text-gray-400">
+              No generic AI talk. Responses are focused on trading logic and
+              decision-making.
+            </p>
+          </div>
+        </div>
+
+        {/* TESTIMONIALS */}
+        <div className="mt-24">
+          <h3 className="text-2xl font-bold text-center mb-10">
+            What Traders Say
+          </h3>
+
+          <div className="grid gap-8 md:grid-cols-2">
+            <div className="bg-black/60 border border-white/10 rounded-2xl p-6">
+              <p className="text-gray-300 mb-2">
+                “This AI explains charts better than most YouTube gurus.”
               </p>
+              <span className="text-sm text-gray-500">
+                — Forex Trader
+              </span>
             </div>
-          ))}
+
+            <div className="bg-black/60 border border-white/10 rounded-2xl p-6">
+              <p className="text-gray-300 mb-2">
+                “Perfect for quick confirmation before London & NY sessions.”
+              </p>
+              <span className="text-sm text-gray-500">
+                — Gold Trader
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-24 text-center">
+          <h3 className="text-2xl font-bold mb-4">
+            Ready to Read the Market Smarter?
+          </h3>
+          <p className="text-gray-400 mb-6">
+            Upload a chart and let AI break it down in seconds.
+          </p>
         </div>
       </div>
     </section>
