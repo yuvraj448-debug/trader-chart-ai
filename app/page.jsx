@@ -101,3 +101,13 @@ export default function Home() {
     </>
   );
 }
+<div style={{
+  marginTop: "200px",
+  padding: "40px",
+  background: "red",
+  color: "white",
+  fontSize: "24px",
+  textAlign: "center"
+}}>
+  FEATURES TEST BLOCK — IF YOU SEE THIS, PAGE IS RENDERING BELOW
+</div>
