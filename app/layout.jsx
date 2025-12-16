@@ -14,17 +14,13 @@ const mono = JetBrains_Mono({
 
 export const metadata = {
   title: 'Trader Chart AI',
-  description: 'AI-powered chart analysis for traders',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body>
-        {/* Animated star background */}
         <Background />
-
-        {/* Main app content */}
         {children}
       </body>
     </html>
