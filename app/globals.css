@@ -132,3 +132,8 @@ body {
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+/* ENSURE CONTENT STAYS ABOVE BACKGROUND */
+.app-content {
+  position: relative;
+  z-index: 1;
+}
