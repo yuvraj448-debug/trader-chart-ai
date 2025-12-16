@@ -1,7 +1,4 @@
-export const metadata = {
-  title: 'Trader Chart AI',
-  description: 'AI-powered chart analysis'
-}
+import './globals.css'
 
 export default function RootLayout({ children }) {
   return (
