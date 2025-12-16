@@ -21,24 +21,20 @@ export async function POST(req) {
     const bytes = await image.arrayBuffer();
     const base64Image = Buffer.from(bytes).toString("base64");
 
-    const completion = await openai.chat.completions.create({
+    console.log("🟢 Image received, size:", base64Image.length);
+
+    const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
+          role: "system",
+          content:
+            "You are a professional institutional trader. Analyze the chart image deeply. Explain market structure, liquidity, bias, scenarios, and risk."
+        },
+        {
           role: "user",
           content: [
-            {
-              type: "text",
-              text: `You are a professional institutional trader.
-Analyze this chart deeply:
-- Market bias
-- Liquidity zones
-- Support & resistance
-- Trade scenarios
-- Risk management
-
-${question ? "User question: " + question : ""}`,
-            },
+            { type: "text", text: question || "Analyze this chart." },
             {
               type: "image_url",
               image_url: {
@@ -48,16 +44,18 @@ ${question ? "User question: " + question : ""}`,
           ],
         },
       ],
-      max_tokens: 800,
+      max_tokens: 700,
     });
 
     const output =
-      completion.choices?.[0]?.message?.content ||
+      response.choices?.[0]?.message?.content ||
       "No analysis generated.";
+
+    console.log("✅ AI RESPONSE OK");
 
     return NextResponse.json({ analysis: output });
   } catch (err) {
-    console.error("FULL AI ERROR:", err);
+    console.error("🔴 FULL AI ERROR:", err);
     return NextResponse.json(
       { analysis: "AI error. Try again." },
       { status: 500 }
