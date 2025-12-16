@@ -23,7 +23,7 @@ export async function POST(req) {
     const base64Image = Buffer.from(bytes).toString("base64");
 
     const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
+      model: "gpt-4o-mini",
       input: [
         {
           role: "user",
