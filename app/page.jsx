@@ -1,5 +1,7 @@
 'use client'
+
 import { useState, useEffect } from 'react'
+import Background from './components/Background'
 
 export default function Home() {
   const [image, setImage] = useState(null)
@@ -28,65 +30,67 @@ export default function Home() {
     })
 
     const data = await res.json()
-    setResult(data.analysis)
+    setResult(data.analysis || '')
     setLoading(false)
   }
 
-  // Typing animation
+  /* Typing animation */
   useEffect(() => {
     if (!result) return
+
     let i = 0
     const interval = setInterval(() => {
       setDisplayText(result.slice(0, i))
       i++
       if (i > result.length) clearInterval(interval)
     }, 15)
+
     return () => clearInterval(interval)
   }, [result])
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center px-4 py-10">
-      <h1 className="text-3xl font-bold mb-6 tracking-wide">
-        Trader Chart AI
-      </h1>
+    <>
+      {/* ⭐ Animated Star Background */}
+      <Background />
 
-      <div className="w-full max-w-xl bg-zinc-900 rounded-2xl p-5 shadow-xl">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-          className="mb-3"
-        />
+      {/* 🔝 CONTENT LAYER */}
+      <main className="app-content min-h-screen flex flex-col items-center px-4 pt-20">
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          Trader Chart AI
+        </h1>
 
-        <input
-          type="text"
-          placeholder="Ask anything about this chart (optional)..."
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          className="w-full mb-4 px-4 py-3 rounded-lg bg-black border border-zinc-700 outline-none"
-        />
+        <div className="w-full max-w-md bg-[#0b0b0b]/80 backdrop-blur-xl border border-[#1a1a1a] rounded-2xl p-4 shadow-xl">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            className="w-full mb-3 text-sm"
+          />
 
-        <button
-          onClick={submitAnalysis}
-          className="w-full bg-white text-black font-semibold py-3 rounded-lg hover:opacity-90 transition"
-        >
-          Analyze Chart
-        </button>
-      </div>
+          <textarea
+            placeholder="Ask anything about this chart (optional)..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className="w-full mb-4 p-2 rounded-md resize-none"
+            rows={2}
+          />
 
-      {/* Loader */}
-      {loading && (
-        <div className="mt-8 text-zinc-400 animate-pulse">
-          🧠 Analyzing smart money & liquidity…
+          <button
+            onClick={submitAnalysis}
+            disabled={loading}
+            className="w-full bg-white text-black font-semibold py-2 rounded-lg"
+          >
+            {loading ? 'Analyzing…' : 'Analyze Chart'}
+          </button>
         </div>
-      )}
 
-      {/* Result */}
-      {displayText && (
-        <div className="mt-8 w-full max-w-xl bg-zinc-900 rounded-2xl p-6 text-sm leading-relaxed whitespace-pre-wrap font-mono">
-          {displayText}
-        </div>
-      )}
-    </main>
+        {/* 📊 RESULT */}
+        {displayText && (
+          <div className="analysis-box w-full max-w-md mt-6">
+            {displayText}
+          </div>
+        )}
+      </main>
+    </>
   )
 }
