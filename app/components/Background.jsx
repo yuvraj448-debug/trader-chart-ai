@@ -1,9 +1,12 @@
 'use client'
+
 import { useEffect } from 'react'
 
 export default function Background() {
   useEffect(() => {
     const canvas = document.getElementById('bg-canvas')
+    if (!canvas) return
+
     const ctx = canvas.getContext('2d')
 
     const resize = () => {
@@ -14,22 +17,25 @@ export default function Background() {
     resize()
     window.addEventListener('resize', resize)
 
-    let stars = Array.from({ length: 120 }).map(() => ({
+    const stars = Array.from({ length: 140 }).map(() => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 1.2,
-      d: Math.random() * 0.5
+      r: Math.random() * 1.4 + 0.3,
+      d: Math.random() * 0.6 + 0.2,
     }))
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = '#ffffff'
       ctx.beginPath()
+
       stars.forEach(s => {
         ctx.moveTo(s.x, s.y)
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
       })
+
       ctx.fill()
+
       stars.forEach(s => {
         s.y += s.d
         if (s.y > canvas.height) {
@@ -39,7 +45,10 @@ export default function Background() {
       })
     }
 
+    draw() // 👈 IMPORTANT (first render)
+
     const interval = setInterval(draw, 40)
+
     return () => {
       clearInterval(interval)
       window.removeEventListener('resize', resize)
@@ -49,7 +58,7 @@ export default function Background() {
   return (
     <canvas
       id="bg-canvas"
-      className="fixed top-0 left-0 w-full h-full -z-10 opacity-30"
+      className="fixed inset-0 z-0 pointer-events-none"
     />
   )
 }
