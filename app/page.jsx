@@ -1,7 +1,5 @@
 'use client'
-
-import { useState, useEffect } from 'react'
-import Background from './components/Background'
+import { useState } from 'react'
 
 export default function Home() {
   const [image, setImage] = useState(null)
@@ -30,67 +28,78 @@ export default function Home() {
     })
 
     const data = await res.json()
-    setResult(data.analysis || '')
+    setResult(data.analysis)
     setLoading(false)
-  }
-
-  /* Typing animation */
-  useEffect(() => {
-    if (!result) return
 
     let i = 0
-    const interval = setInterval(() => {
-      setDisplayText(result.slice(0, i))
+    const typing = setInterval(() => {
+      setDisplayText(prev => prev + data.analysis[i])
       i++
-      if (i > result.length) clearInterval(interval)
-    }, 15)
-
-    return () => clearInterval(interval)
-  }, [result])
+      if (i >= data.analysis.length) clearInterval(typing)
+    }, 8)
+  }
 
   return (
-    <>
-      {/* ⭐ Animated Star Background */}
-      <Background />
+    <main className="min-h-screen flex flex-col items-center justify-start px-4 pt-20">
+      <h1 className="text-3xl font-bold text-center">
+        Trader Chart AI
+      </h1>
 
-      {/* 🔝 CONTENT LAYER */}
-      <main className="app-content min-h-screen flex flex-col items-center px-4 pt-20">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          Trader Chart AI
-        </h1>
+      <p className="text-sm text-gray-400 text-center mt-2 mb-6">
+        Upload any chart screenshot. Let AI read the market like a pro.
+      </p>
 
-        <div className="w-full max-w-md bg-[#0b0b0b]/80 backdrop-blur-xl border border-[#1a1a1a] rounded-2xl p-4 shadow-xl">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
-            className="w-full mb-3 text-sm"
-          />
+      <div className="w-full max-w-md bg-black/60 backdrop-blur border border-white/10 rounded-2xl p-4">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={e => setImage(e.target.files[0])}
+          className="w-full text-sm mb-3"
+        />
 
-          <textarea
-            placeholder="Ask anything about this chart (optional)..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            className="w-full mb-4 p-2 rounded-md resize-none"
-            rows={2}
-          />
+        <input
+          type="text"
+          placeholder="Ask anything about this chart (optional)..."
+          value={question}
+          onChange={e => setQuestion(e.target.value)}
+          className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-sm mb-4"
+        />
+
+        <button
+          onClick={submitAnalysis}
+          className="w-full bg-white text-black font-semibold py-3 rounded-xl"
+        >
+          {loading ? (
+            <span className="flex justify-center gap-2">
+              <span className="w-2 h-2 bg-black rounded-full animate-bounce"></span>
+              <span className="w-2 h-2 bg-black rounded-full animate-bounce delay-150"></span>
+              <span className="w-2 h-2 bg-black rounded-full animate-bounce delay-300"></span>
+            </span>
+          ) : (
+            'Analyze Chart'
+          )}
+        </button>
+      </div>
+
+      {displayText && (
+        <div className="w-full max-w-md mt-6 space-y-4">
+          {displayText.split('\n\n').map((block, i) => (
+            <div key={i} className="analysis-box">
+              {block}
+            </div>
+          ))}
 
           <button
-            onClick={submitAnalysis}
-            disabled={loading}
-            className="w-full bg-white text-black font-semibold py-2 rounded-lg"
+            onClick={() => {
+              navigator.clipboard.writeText(result)
+              alert('Analysis copied 🚀')
+            }}
+            className="w-full py-3 rounded-xl border border-white/10 text-sm hover:bg-white/10 transition"
           >
-            {loading ? 'Analyzing…' : 'Analyze Chart'}
+            📤 Copy Analysis
           </button>
         </div>
-
-        {/* 📊 RESULT */}
-        {displayText && (
-          <div className="analysis-box w-full max-w-md mt-6">
-            {displayText}
-          </div>
-        )}
-      </main>
-    </>
+      )}
+    </main>
   )
 }
