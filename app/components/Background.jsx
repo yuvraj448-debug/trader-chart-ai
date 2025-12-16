@@ -1,12 +1,10 @@
 'use client'
-
 import { useEffect } from 'react'
 
 export default function Background() {
   useEffect(() => {
     const canvas = document.getElementById('bg-canvas')
     if (!canvas) return
-
     const ctx = canvas.getContext('2d')
 
     const resize = () => {
@@ -17,10 +15,10 @@ export default function Background() {
     resize()
     window.addEventListener('resize', resize)
 
-    const stars = Array.from({ length: 140 }).map(() => ({
+    let stars = Array.from({ length: 140 }).map(() => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 1.4 + 0.3,
+      r: Math.random() * 1.4,
       d: Math.random() * 0.6 + 0.2,
     }))
 
@@ -45,8 +43,6 @@ export default function Background() {
       })
     }
 
-    draw() // 👈 IMPORTANT (first render)
-
     const interval = setInterval(draw, 40)
 
     return () => {
@@ -58,7 +54,7 @@ export default function Background() {
   return (
     <canvas
       id="bg-canvas"
-      className="fixed inset-0 z-0 pointer-events-none"
+      className="fixed top-0 left-0 w-full h-full -z-10 opacity-40"
     />
   )
 }
