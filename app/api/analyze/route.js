@@ -15,21 +15,21 @@ export async function POST(req) {
           role: "user",
           content: [
             { type: "text", text: question },
-            {
-              type: "image_url",
-              image_url: { url: image },
-            },
+            { type: "image_url", image_url: { url: image } },
           ],
         },
       ],
-      max_tokens: 700,
+      temperature: 0.4,
+      max_tokens: 900,
     });
 
-    return Response.json({
-      result: response.choices[0].message.content,
-    });
-  } catch (error) {
-    console.error("AI ERROR:", error);
+    const result =
+      response?.choices?.[0]?.message?.content ||
+      "AI could not analyze this chart.";
+
+    return Response.json({ result });
+  } catch (err) {
+    console.error(err);
     return Response.json({ error: "AI error" }, { status: 500 });
   }
 }
