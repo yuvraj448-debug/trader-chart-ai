@@ -23,29 +23,23 @@ export default function Home() {
     formData.append("question", isFollowUp ? followUp : question);
     formData.append("previous", analysis);
 
-    try {
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        body: formData,
-      });
+    const res = await fetch("/api/analyze", {
+      method: "POST",
+      body: formData,
+    });
 
-      const data = await res.json();
-      setAnalysis(
-        isFollowUp
-          ? analysis + "\n\n" + data.analysis
-          : data.analysis
-      );
-      setFollowUp("");
-    } catch (e) {
-      alert("AI error. Try again.");
-    }
+    const data = await res.json();
 
+    setAnalysis(
+      isFollowUp ? analysis + "\n\n" + data.analysis : data.analysis
+    );
+    setFollowUp("");
     setLoading(false);
   };
 
   return (
     <>
-      {/* HERO SECTION */}
+      {/* MAIN HERO */}
       <main className="relative z-10 flex min-h-screen flex-col items-center px-4 pt-20 text-white">
         <h1 className="text-3xl font-bold mb-2">Trader Chart AI</h1>
         <p className="text-gray-400 mb-6 text-center">
@@ -102,7 +96,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* FEATURES SECTION — NOW GUARANTEED TO RENDER */}
+      {/* FEATURES SECTION (THIS WAS MISSING PROPERLY) */}
       <Features />
     </>
   );
