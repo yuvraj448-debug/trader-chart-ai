@@ -18,27 +18,36 @@ export default function Home() {
 
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("image", image);
-    formData.append("question", isFollowUp ? followUp : question);
-    formData.append("previous", analysis);
+    try {
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("question", isFollowUp ? followUp : question);
+      formData.append("previous", analysis);
 
-    const res = await fetch("/api/analyze", {
-      method: "POST",
-      body: formData,
-    });
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
 
-    const data = await res.json();
-    setAnalysis(
-      isFollowUp ? analysis + "\n\n" + data.analysis : data.analysis
-    );
-    setFollowUp("");
+      const data = await res.json();
+
+      setAnalysis(
+        isFollowUp
+          ? analysis + "\n\n" + data.analysis
+          : data.analysis
+      );
+      setFollowUp("");
+    } catch (err) {
+      alert("AI error. Try again.");
+    }
+
     setLoading(false);
   };
 
   return (
     <>
-      <main className="relative z-10 flex min-h-screen flex-col items-center justify-start px-4 pt-20 text-white">
+      {/* HERO / AI SECTION */}
+      <main className="relative z-10 flex flex-col items-center px-4 pt-20 text-white">
         <h1 className="text-3xl font-bold mb-2">Trader Chart AI</h1>
         <p className="text-gray-400 mb-6 text-center">
           Upload any chart screenshot. Let AI read the market like a pro.
@@ -94,22 +103,8 @@ export default function Home() {
         )}
       </main>
 
-      {/* FEATURES SECTION */}
+      {/* FEATURES SECTION (ALWAYS VISIBLE BELOW) */}
       <Features />
-
-      {/* TEST BLOCK (REMOVE LATER) */}
-      <div
-        style={{
-          marginTop: "200px",
-          padding: "40px",
-          background: "red",
-          color: "white",
-          fontSize: "24px",
-          textAlign: "center",
-        }}
-      >
-        FEATURES TEST BLOCK – IF YOU SEE THIS, IT IS FIXED ✅
-      </div>
     </>
   );
 }
