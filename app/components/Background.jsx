@@ -1,62 +1,33 @@
-'use client'
-
-import { useEffect } from 'react'
-
 export default function Background() {
-  useEffect(() => {
-    const canvas = document.getElementById('bg-canvas')
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-
-    resize()
-    window.addEventListener('resize', resize)
-
-    const stars = Array.from({ length: 160 }).map(() => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.2,
-      s: Math.random() * 0.6 + 0.2,
-    }))
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      ctx.fillStyle = '#ffffff'
-      ctx.beginPath()
-
-      stars.forEach((star) => {
-        ctx.moveTo(star.x, star.y)
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2)
-      })
-
-      ctx.fill()
-
-      stars.forEach((star) => {
-        star.y += star.s
-        if (star.y > canvas.height) {
-          star.y = 0
-          star.x = Math.random() * canvas.width
-        }
-      })
-    }
-
-    const interval = setInterval(draw, 30)
-
-    return () => {
-      clearInterval(interval)
-      window.removeEventListener('resize', resize)
-    }
-  }, [])
-
   return (
-    <canvas
-      id="bg-canvas"
-      className="fixed inset-0 z-0 opacity-40 pointer-events-none"
-    />
-  )
+    <div className="ai-bg">
+      <svg
+        viewBox="0 0 800 800"
+        className="ai-bg-svg"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#4cc9f0" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#0b132b" stopOpacity="0.05" />
+          </radialGradient>
+        </defs>
+
+        {/* Rotating rings */}
+        <circle cx="400" cy="400" r="260" className="ring r1" />
+        <circle cx="400" cy="400" r="210" className="ring r2" />
+        <circle cx="400" cy="400" r="160" className="ring r3" />
+
+        {/* Flow lines */}
+        <path
+          d="M150 400 C300 150, 500 150, 650 400"
+          className="flow"
+        />
+        <path
+          d="M150 400 C300 650, 500 650, 650 400"
+          className="flow"
+        />
+      </svg>
+    </div>
+  );
 }
