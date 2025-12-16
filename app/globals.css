@@ -214,3 +214,79 @@ button:disabled {
   background: #1f1f1f;
   border-radius: 10px;
 }
+/* ===============================
+   AI CORE LIVE SPHERE
+   =============================== */
+
+.ai-core-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.ai-core {
+  width: 520px;
+  height: 520px;
+  opacity: 0.35;
+}
+
+.ai-core circle {
+  fill: none;
+  stroke: url(#glow);
+  stroke-width: 1.2;
+}
+
+.ring {
+  transform-origin: center;
+  animation: rotateSlow 60s linear infinite;
+}
+
+.ring-2 {
+  animation-duration: 90s;
+  animation-direction: reverse;
+}
+
+.ring-3 {
+  animation-duration: 120s;
+}
+
+.flow {
+  fill: none;
+  stroke: url(#glow);
+  stroke-width: 1;
+  opacity: 0.6;
+  animation: pulse 6s ease-in-out infinite;
+}
+
+@keyframes rotateSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .ai-core {
+    width: 360px;
+    height: 360px;
+  }
+}
