@@ -56,10 +56,10 @@ ${question || "Give full market analysis"}
 
     return NextResponse.json({ analysis: output });
   } catch (err) {
-    console.error("AI ERROR:", err);
-    return NextResponse.json(
-      { analysis: "AI error. Try again." },
-      { status: 500 }
-    );
-  }
+  console.error("FULL AI ERROR:", err);
+
+  return NextResponse.json(
+    { analysis: "AI error. Try again." },
+    { status: 500 }
+  );
 }
