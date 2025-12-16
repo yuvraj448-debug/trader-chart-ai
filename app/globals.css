@@ -148,3 +148,36 @@ button:hover {
     opacity: 0.28;
   }
 }
+/* ===============================
+   STARS BACKGROUND
+   =============================== */
+.stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 80% 40%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 50% 80%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 70% 10%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 10% 70%, #ffffff55, transparent);
+  background-size: 300px 300px;
+  animation: starMove 120s linear infinite;
+  opacity: 0.35;
+}
+
+@keyframes starMove {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 1000px 1000px;
+  }
+}
+
+/* BACKGROUND LAYER FIX */
+.ai-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
