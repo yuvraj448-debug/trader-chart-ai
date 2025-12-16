@@ -1,54 +1,55 @@
 import OpenAI from "openai";
 
-export const runtime = "nodejs"; // IMPORTANT
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export const runtime = "edge";
 
 export async function POST(req) {
-  console.log("🔹 API HIT");
-
   try {
-    const body = await req.json();
-    console.log("🔹 BODY RECEIVED");
+    const formData = await req.formData();
+    const image = formData.get("image");
+    const question = formData.get("question") || "Analyze this trading chart.";
 
-    const { image, question } = body;
-
-    if (!image || !question) {
-      console.log("❌ Missing image or question");
-      return Response.json(
-        { error: "Missing image or question" },
+    if (!image) {
+      return new Response(
+        JSON.stringify({ error: "No image provided" }),
         { status: 400 }
       );
     }
 
-    console.log("🔹 Calling OpenAI");
+    const buffer = await image.arrayBuffer();
+    const base64Image = Buffer.from(buffer).toString("base64");
 
-    const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: [
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
         {
           role: "user",
           content: [
-            { type: "input_text", text: question },
-            { type: "input_image", image_url: image },
+            { type: "text", text: question },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/png;base64,${base64Image}`,
+              },
+            },
           ],
         },
       ],
     });
 
-    const text =
-      response.output_text ||
-      "AI could not generate analysis.";
-
-    console.log("✅ AI RESPONSE OK");
-
-    return Response.json({ result: text });
+    return new Response(
+      JSON.stringify({
+        result: response.choices[0].message.content,
+      }),
+      { status: 200 }
+    );
   } catch (err) {
-    console.error("❌ API ERROR", err);
-    return Response.json(
-      { error: "Internal AI error" },
+    console.error(err);
+    return new Response(
+      JSON.stringify({ error: "AI error" }),
       { status: 500 }
     );
   }
