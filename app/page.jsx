@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Home() {
   const [image, setImage] = useState(null)
@@ -9,10 +9,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
 
   const submitAnalysis = async () => {
-    if (!image) {
-      alert('Upload a chart screenshot')
-      return
-    }
+    if (!image) return alert('Upload a chart screenshot')
 
     setLoading(true)
     setResult('')
@@ -30,74 +27,91 @@ export default function Home() {
     const data = await res.json()
     setResult(data.analysis)
     setLoading(false)
-
-    let i = 0
-    const typing = setInterval(() => {
-      setDisplayText(prev => prev + data.analysis[i])
-      i++
-      if (i >= data.analysis.length) clearInterval(typing)
-    }, 8)
   }
 
-  return (
-    <main className="min-h-screen flex flex-col items-center justify-start px-4 pt-20">
-      <h1 className="text-3xl font-bold text-center">
-        Trader Chart AI
-      </h1>
+  useEffect(() => {
+    if (!result) return
+    let i = 0
+    const interval = setInterval(() => {
+      setDisplayText(prev => prev + result[i])
+      i++
+      if (i >= result.length) clearInterval(interval)
+    }, 12)
+    return () => clearInterval(interval)
+  }, [result])
 
-      <p className="text-sm text-gray-400 text-center mt-2 mb-6">
+  return (
+    <main className="min-h-screen flex flex-col items-center px-4 pt-24">
+      <h1 className="text-3xl font-bold mb-2">Trader Chart AI</h1>
+      <p className="text-sm text-gray-400 mb-8 text-center">
         Upload any chart screenshot. Let AI read the market like a pro.
       </p>
 
-      <div className="w-full max-w-md bg-black/60 backdrop-blur border border-white/10 rounded-2xl p-4">
+      <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl p-5">
         <input
           type="file"
-          accept="image/*"
           onChange={e => setImage(e.target.files[0])}
-          className="w-full text-sm mb-3"
+          className="mb-3 w-full text-sm"
         />
 
         <input
-          type="text"
-          placeholder="Ask anything about this chart (optional)..."
           value={question}
           onChange={e => setQuestion(e.target.value)}
-          className="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-sm mb-4"
+          placeholder="Ask anything about this chart (optional)..."
+          className="w-full mb-4 bg-black border border-neutral-800 rounded-lg px-4 py-3 text-sm"
         />
 
         <button
           onClick={submitAnalysis}
-          className="w-full bg-white text-black font-semibold py-3 rounded-xl"
+          className="w-full bg-white text-black py-3 rounded-xl font-semibold"
         >
-          {loading ? (
-            <span className="flex justify-center gap-2">
-              <span className="w-2 h-2 bg-black rounded-full animate-bounce"></span>
-              <span className="w-2 h-2 bg-black rounded-full animate-bounce delay-150"></span>
-              <span className="w-2 h-2 bg-black rounded-full animate-bounce delay-300"></span>
-            </span>
-          ) : (
-            'Analyze Chart'
-          )}
+          Analyze Chart
         </button>
       </div>
 
-      {displayText && (
-        <div className="w-full max-w-md mt-6 space-y-4">
-          {displayText.split('\n\n').map((block, i) => (
-            <div key={i} className="analysis-box">
-              {block}
-            </div>
-          ))}
+      {/* AI Visual */}
+      <div className="relative mt-16 flex flex-col items-center text-center">
+        <div className="absolute inset-0 blur-3xl opacity-30 bg-green-500 rounded-full"></div>
+        <img
+          src="https://i.imgur.com/9QZQZQy.png"
+          className="relative w-56 h-56 animate-pulse"
+          alt="AI Brain"
+        />
+        <p className="mt-5 text-xs text-gray-400 max-w-xs">
+          AI is analyzing structure, liquidity, momentum & intent
+        </p>
+      </div>
 
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(result)
-              alert('Analysis copied 🚀')
-            }}
-            className="w-full py-3 rounded-xl border border-white/10 text-sm hover:bg-white/10 transition"
-          >
-            📤 Copy Analysis
-          </button>
+      {/* Result */}
+      {loading && (
+        <p className="mt-10 text-sm text-gray-400 animate-pulse">
+          Analyzing chart...
+        </p>
+      )}
+
+      {displayText && (
+        <div className="analysis-box mt-10 max-w-md w-full">
+          {displayText}
+        </div>
+      )}
+
+      {/* Follow-up Chat */}
+      {result && (
+        <div className="mt-8 w-full max-w-md">
+          <div className="flex gap-2">
+            <input
+              value={question}
+              onChange={e => setQuestion(e.target.value)}
+              placeholder="Ask a follow-up question..."
+              className="flex-1 bg-black border border-neutral-800 rounded-lg px-4 py-3 text-sm"
+            />
+            <button
+              onClick={submitAnalysis}
+              className="bg-white text-black px-4 rounded-lg font-medium"
+            >
+              Ask
+            </button>
+          </div>
         </div>
       )}
     </main>
