@@ -2,21 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===============================
-   THEME VARIABLES
-   =============================== */
-:root {
-  --bg: #050505;
-  --card: #0b0b0b;
-  --border: #1a1a1a;
-  --text: #eaeaea;
-  --muted: #9ca3af;
-  --accent: #4cc9f0;
-}
-
-/* ===============================
-   GLOBAL RESET
-   =============================== */
+/* RESET */
 * {
   box-sizing: border-box;
 }
@@ -26,131 +12,32 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  min-height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, sans-serif;
+  height: 100%;
+  background: #050505;
+  color: #eaeaea;
   overflow-x: hidden;
+  font-family: system-ui, sans-serif;
+}
+
+/* APP CONTENT */
+.app-content {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
 }
 
 /* ===============================
-   INPUTS & BUTTONS
-   =============================== */
-input,
-button,
-textarea {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-  outline: none;
-}
-
-button {
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 30px rgba(76, 201, 240, 0.15);
-}
-
-/* ===============================
-   LIVE AI BACKGROUND
-   =============================== */
-
+   BACKGROUND
+================================ */
 .ai-bg {
   position: fixed;
   inset: 0;
   z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   pointer-events: none;
+  overflow: hidden;
 }
 
-.ai-bg-svg {
-  width: 620px;
-  height: 620px;
-  opacity: 0.38;
-}
-
-/* Rings */
-.ring {
-  fill: none;
-  stroke: url(#coreGlow);
-  stroke-width: 1.3;
-  transform-origin: center;
-}
-
-.r1 {
-  animation: spin 90s linear infinite;
-}
-
-.r2 {
-  animation: spinReverse 130s linear infinite;
-}
-
-.r3 {
-  animation: spin 180s linear infinite;
-}
-
-/* Flow lines */
-.flow {
-  fill: none;
-  stroke: url(#coreGlow);
-  stroke-width: 1.1;
-  opacity: 0.6;
-  animation: pulse 6s ease-in-out infinite;
-}
-
-/* ===============================
-   ANIMATIONS
-   =============================== */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes spinReverse {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.85;
-  }
-  100% {
-    opacity: 0.2;
-  }
-}
-
-/* ===============================
-   MOBILE OPTIMIZATION
-   =============================== */
-@media (max-width: 768px) {
-  .ai-bg-svg {
-    width: 360px;
-    height: 360px;
-    opacity: 0.28;
-  }
-}
-/* ===============================
-   STARS BACKGROUND
-   =============================== */
+/* STARS */
 .stars {
   position: absolute;
   inset: 0;
@@ -161,11 +48,11 @@ button:hover {
     radial-gradient(1px 1px at 70% 10%, #ffffff55, transparent),
     radial-gradient(1px 1px at 10% 70%, #ffffff55, transparent);
   background-size: 300px 300px;
-  animation: starMove 120s linear infinite;
+  animation: starsMove 120s linear infinite;
   opacity: 0.35;
 }
 
-@keyframes starMove {
+@keyframes starsMove {
   from {
     background-position: 0 0;
   }
@@ -174,10 +61,72 @@ button:hover {
   }
 }
 
-/* BACKGROUND LAYER FIX */
-.ai-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+/* AI CORE */
+.ai-core {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  opacity: 0.6;
+}
+
+.ring {
+  fill: none;
+  stroke: #4cc9f0;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.r1 {
+  animation: rotate 60s linear infinite;
+}
+.r2 {
+  animation: rotateReverse 90s linear infinite;
+}
+.r3 {
+  animation: rotate 120s linear infinite;
+}
+
+.flow {
+  fill: none;
+  stroke: #4cc9f0;
+  stroke-width: 1;
+  opacity: 0.35;
+  animation: pulse 6s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform-origin: 50% 50%;
+    transform: rotate(0deg);
+  }
+  to {
+    transform-origin: 50% 50%;
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateReverse {
+  from {
+    transform-origin: 50% 50%;
+    transform: rotate(360deg);
+  }
+  to {
+    transform-origin: 50% 50%;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.2;
+  }
 }
