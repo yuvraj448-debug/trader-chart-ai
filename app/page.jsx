@@ -38,11 +38,9 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO + AI CORE */}
-      <main className="relative z-10 flex min-h-screen flex-col items-center px-4 pt-20 text-white">
+      <main className="relative z-10 flex min-h-screen flex-col items-center justify-start px-4 pt-20 text-white">
         <h1 className="text-3xl font-bold mb-2">Trader Chart AI</h1>
-
-        <p className="text-gray-400 mb-6 text-center max-w-xl">
+        <p className="text-gray-400 mb-6 text-center">
           Upload any chart screenshot. Let AI read the market like a pro.
         </p>
 
@@ -96,18 +94,22 @@ export default function Home() {
         )}
       </main>
 
-      {/* FEATURES — OUTSIDE MAIN (IMPORTANT) */}
+      {/* FEATURES SECTION */}
       <Features />
+
+      {/* TEST BLOCK (REMOVE LATER) */}
+      <div
+        style={{
+          marginTop: "200px",
+          padding: "40px",
+          background: "red",
+          color: "white",
+          fontSize: "24px",
+          textAlign: "center",
+        }}
+      >
+        FEATURES TEST BLOCK – IF YOU SEE THIS, IT IS FIXED ✅
+      </div>
     </>
   );
 }
-<div style={{
-  marginTop: "200px",
-  padding: "40px",
-  background: "red",
-  color: "white",
-  fontSize: "24px",
-  textAlign: "center"
-}}>
-  FEATURES TEST BLOCK — IF YOU SEE THIS, PAGE IS RENDERING BELOW
-</div>
