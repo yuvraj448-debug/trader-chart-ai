@@ -2,20 +2,14 @@
 
 export default function Background() {
   return (
-    <div className="bg-wrapper">
-      <div className="stars" />
+    <div className="bg-root">
+      <div className="bg-stars" />
 
-      {/* Ring container (POSITION ONLY) */}
-      <div className="ring-holder">
-        {/* SVG rotates INSIDE */}
-        <svg
-          className="rings"
-          viewBox="0 0 600 600"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <circle cx="300" cy="300" r="170" />
-          <circle cx="300" cy="300" r="220" />
-          <circle cx="300" cy="300" r="270" />
+      <div className="bg-rings">
+        <svg viewBox="0 0 500 500">
+          <circle cx="250" cy="250" r="180" />
+          <circle cx="250" cy="250" r="220" />
+          <circle cx="250" cy="250" r="260" />
         </svg>
       </div>
     </div>
