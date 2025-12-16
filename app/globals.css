@@ -2,14 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ================= ROOT ================= */
+/* =========================
+   THEME VARIABLES
+========================= */
 :root {
   --bg: #050505;
+  --card: #0b0b0b;
+  --border: #1a1a1a;
   --text: #eaeaea;
-  --accent: #22c55e;
+  --muted: #9ca3af;
+  --accent: #38bdf8;
 }
 
-/* ================= RESET ================= */
+/* =========================
+   GLOBAL RESET
+========================= */
 * {
   box-sizing: border-box;
 }
@@ -18,77 +25,103 @@ html,
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  min-height: 100%;
   background: var(--bg);
   color: var(--text);
-  min-height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ================= CONTENT ================= */
-.app-content {
-  position: relative;
-  z-index: 2;
-}
-
-/* ================= BACKGROUND ================= */
+/* =========================
+   BACKGROUND WRAPPER
+========================= */
 .bg-wrapper {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
+  background: radial-gradient(
+    circle at center,
+    #0a0a0a 0%,
+    #000000 70%
+  );
   overflow: hidden;
-  pointer-events: none;
-  background: radial-gradient(circle at center, #080808, #000);
 }
 
-/* ================= STARS ================= */
+/* =========================
+   STARS (NEVER DISAPPEAR)
+========================= */
 .stars {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-    radial-gradient(1px 1px at 80% 40%, #fff, transparent),
-    radial-gradient(1px 1px at 30% 70%, #fff, transparent),
-    radial-gradient(1px 1px at 60% 10%, #fff, transparent),
-    radial-gradient(1px 1px at 90% 80%, #fff, transparent);
-  background-size: 400px 400px;
-  animation: starsMove 60s linear infinite;
-  opacity: 0.35;
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 80% 40%, rgba(255,255,255,0.4) 50%, transparent 51%),
+    radial-gradient(1px 1px at 50% 80%, rgba(255,255,255,0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 10% 60%, rgba(255,255,255,0.3) 50%, transparent 51%),
+    radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.5) 50%, transparent 51%);
+  background-size: 200px 200px;
+  animation: starDrift 120s linear infinite;
+  opacity: 0.6;
 }
 
-@keyframes starsMove {
+@keyframes starDrift {
   from {
     transform: translateY(0);
   }
   to {
-    transform: translateY(-400px);
+    transform: translateY(-200px);
   }
 }
 
-/* ================= RINGS ================= */
-.rings {
+/* =========================
+   RING POSITION (FIXED)
+========================= */
+.ring-holder {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 900px;
   height: 900px;
   transform: translate(-50%, -50%);
-  animation: rotateRings 80s linear infinite;
+  pointer-events: none;
+}
+
+/* =========================
+   RING ROTATION (FOREVER)
+========================= */
+.rings {
+  width: 100%;
+  height: 100%;
+  animation: spinRings 60s linear infinite;
+  transform-origin: center;
 }
 
 .rings circle {
   fill: none;
-  stroke: #38bdf8;
+  stroke: var(--accent);
   stroke-width: 1.2;
   opacity: 0.35;
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.6));
 }
 
-@keyframes rotateRings {
+/* PURE ROTATION — NO TRANSLATE */
+@keyframes spinRings {
   from {
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-    transform: translate(-50%, -50%) rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================
+   MOBILE SAFETY
+========================= */
+@media (max-width: 768px) {
+  .ring-holder {
+    width: 700px;
+    height: 700px;
   }
 }
