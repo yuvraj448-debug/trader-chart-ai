@@ -7,10 +7,14 @@ export default function AICore() {
   const [analysis, setAnalysis] = useState("");
   const [followUp, setFollowUp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [analyzedOnce, setAnalyzedOnce] = useState(false);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    setAnalysis("");
+    setAnalyzedOnce(false);
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -20,10 +24,7 @@ export default function AICore() {
   };
 
   const analyzeChart = async () => {
-    if (!imageBase64) {
-      alert("Please upload a chart image first");
-      return;
-    }
+    if (!imageBase64 || loading || analyzedOnce) return;
 
     setLoading(true);
     setAnalysis("");
@@ -35,12 +36,18 @@ export default function AICore() {
         body: JSON.stringify({
           image: imageBase64,
           question:
-            "Analyze this trading chart like a professional trader. Explain bias, structure, liquidity, and possible scenarios.",
+            "You are a professional institutional trader. Analyze this chart deeply. Explain trend, structure, liquidity, bias, and possible scenarios.",
         }),
       });
 
       const data = await res.json();
-      setAnalysis(data.result || "No response from AI");
+
+      if (!data.result) {
+        setAnalysis("No analysis returned. Try again.");
+      } else {
+        setAnalysis(data.result);
+        setAnalyzedOnce(true);
+      }
     } catch (err) {
       setAnalysis("AI error. Please try again.");
     }
@@ -49,7 +56,7 @@ export default function AICore() {
   };
 
   const askFollowUp = async () => {
-    if (!followUp.trim()) return;
+    if (!followUp.trim() || !imageBase64 || loading) return;
 
     setLoading(true);
 
@@ -58,7 +65,7 @@ export default function AICore() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          image: imageBase64, // IMPORTANT: SAME IMAGE AGAIN
+          image: imageBase64,
           question: followUp,
         }),
       });
@@ -77,17 +84,10 @@ export default function AICore() {
     <div className="relative z-10 max-w-xl mx-auto p-4">
       <input type="file" onChange={handleImageUpload} />
 
-      <input
-        type="text"
-        placeholder="Ask anything about this chart (optional)..."
-        value={followUp}
-        onChange={(e) => setFollowUp(e.target.value)}
-        className="w-full mt-3 p-2 rounded bg-black border border-gray-700 text-white"
-      />
-
       <button
         onClick={analyzeChart}
-        className="w-full mt-3 bg-white text-black py-2 rounded"
+        disabled={loading || analyzedOnce}
+        className="w-full mt-4 bg-white text-black py-2 rounded disabled:opacity-50"
       >
         Analyze Chart
       </button>
@@ -105,12 +105,22 @@ export default function AICore() {
       )}
 
       {analysis && (
-        <button
-          onClick={askFollowUp}
-          className="w-full mt-3 bg-white text-black py-2 rounded"
-        >
-          Ask Follow-up
-        </button>
+        <>
+          <input
+            type="text"
+            placeholder="Ask a follow-up about this chart..."
+            value={followUp}
+            onChange={(e) => setFollowUp(e.target.value)}
+            className="w-full mt-4 p-2 rounded bg-black border border-gray-700 text-white"
+          />
+
+          <button
+            onClick={askFollowUp}
+            className="w-full mt-3 bg-white text-black py-2 rounded"
+          >
+            Ask Follow-up
+          </button>
+        </>
       )}
     </div>
   );
