@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 export default function Background() {
   useEffect(() => {
     const canvas = document.getElementById('bg-canvas')
-    if (!canvas) return
     const ctx = canvas.getContext('2d')
 
     const resize = () => {
@@ -15,10 +14,10 @@ export default function Background() {
     resize()
     window.addEventListener('resize', resize)
 
-    let stars = Array.from({ length: 140 }).map(() => ({
+    const stars = Array.from({ length: 140 }).map(() => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 1.4,
+      r: Math.random() * 1.3,
       d: Math.random() * 0.6 + 0.2,
     }))
 
