@@ -1,79 +1,101 @@
 'use client'
+
 import { useState } from 'react'
 
 export default function Home() {
   const [image, setImage] = useState(null)
-  const [asset, setAsset] = useState('XAUUSD')
-  const [timeframe, setTimeframe] = useState('M15')
-  const [session, setSession] = useState('London')
+  const [question, setQuestion] = useState('')
   const [result, setResult] = useState('')
   const [loading, setLoading] = useState(false)
 
   const submitAnalysis = async () => {
-    if (!image) return alert('Upload chart screenshot')
+    if (!image) {
+      alert('Please upload a chart screenshot')
+      return
+    }
+
     setLoading(true)
+    setResult('')
 
     const formData = new FormData()
     formData.append('image', image)
-    formData.append('asset', asset)
-    formData.append('timeframe', timeframe)
-    formData.append('session', session)
+    formData.append('question', question)
 
-    const res = await fetch('/api/analyze', {
-      method: 'POST',
-      body: formData,
-    })
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        body: formData,
+      })
 
-    const data = await res.json()
-    setResult(data.analysis)
+      const data = await res.json()
+      setResult(data.analysis || 'No response from AI')
+    } catch (err) {
+      setResult('Something went wrong. Try again.')
+    }
+
     setLoading(false)
   }
 
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-xl bg-zinc-900 p-6 rounded-2xl">
-        <h1 className="text-2xl font-bold mb-4">Trader Chart AI</h1>
+    <main style={{
+      minHeight: '100vh',
+      background: '#0b0b0b',
+      color: '#fff',
+      padding: '20px',
+      fontFamily: 'Arial',
+    }}>
+      <h1 style={{ fontSize: '26px', marginBottom: '15px' }}>
+        Trader Chart AI
+      </h1>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-          className="mb-3"
-        />
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setImage(e.target.files[0])}
+        style={{ marginBottom: '12px' }}
+      />
 
-        <div className="flex gap-2 mb-3">
-          <select onChange={(e) => setAsset(e.target.value)} className="bg-black border p-2">
-            <option>XAUUSD</option>
-            <option>BTCUSD</option>
-            <option>EURUSD</option>
-          </select>
+      <input
+        type="text"
+        placeholder="Ask anything about this chart (optional)..."
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '10px',
+          marginBottom: '12px',
+          background: '#111',
+          color: '#fff',
+          border: '1px solid #333',
+          borderRadius: '6px',
+        }}
+      />
 
-          <select onChange={(e) => setTimeframe(e.target.value)} className="bg-black border p-2">
-            <option>M5</option>
-            <option>M15</option>
-            <option>H1</option>
-          </select>
+      <button
+        onClick={submitAnalysis}
+        style={{
+          width: '100%',
+          padding: '12px',
+          background: '#fff',
+          color: '#000',
+          fontWeight: 'bold',
+          borderRadius: '8px',
+        }}
+      >
+        {loading ? 'Analyzing chart…' : 'Analyze Chart'}
+      </button>
 
-          <select onChange={(e) => setSession(e.target.value)} className="bg-black border p-2">
-            <option>London</option>
-            <option>New York</option>
-            <option>Asia</option>
-          </select>
-        </div>
-
-        <button
-          onClick={submitAnalysis}
-          className="w-full bg-white text-black font-bold py-2 rounded-xl"
-        >
-          {loading ? 'Analyzing...' : 'Analyze Chart'}
-        </button>
-
-        {result && (
-          <pre className="mt-4 bg-black p-4 rounded-xl text-sm whitespace-pre-wrap">
-            {result}
-          </pre>
-        )}
-      </div>
+      {result && (
+        <pre style={{
+          marginTop: '20px',
+          background: '#111',
+          padding: '15px',
+          borderRadius: '8px',
+          whiteSpace: 'pre-wrap',
+        }}>
+          {result}
+        </pre>
+      )}
     </main>
   )
 }
