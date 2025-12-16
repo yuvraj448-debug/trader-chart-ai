@@ -10,13 +10,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        {/* BACKGROUND MUST LIVE HERE */}
         <Background />
-
-        {/* MAIN CONTENT */}
-        <main className="app-content">
-          {children}
-        </main>
+        <main className="app-content">{children}</main>
       </body>
     </html>
   );
