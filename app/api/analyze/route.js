@@ -1,6 +1,5 @@
+import { NextResponse } from "next/server";
 import OpenAI from "openai";
-
-export const runtime = "nodejs";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -13,61 +12,58 @@ export async function POST(req) {
     const question = formData.get("question") || "";
 
     if (!imageFile) {
-      return new Response(
-        JSON.stringify({ analysis: "No image received." }),
+      return NextResponse.json(
+        { analysis: "No image uploaded." },
         { status: 400 }
       );
     }
 
+    // Convert image → base64
     const bytes = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64Image = buffer.toString("base64");
+    const base64Image = Buffer.from(bytes).toString("base64");
 
-    const prompt = `
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: `
 You are a professional institutional trader.
 
 Analyze ANY trading chart screenshot (forex, crypto, stocks, indices).
 
 Give:
-1. Market structure
-2. Liquidity zones
-3. Possible trade idea (entry, SL, TP)
-4. Risk & invalidation
-5. Beginner-friendly explanation
+• Market bias
+• Liquidity zones
+• Key support & resistance
+• Possible scenarios
+• Entry / SL / TP ideas
+• Risk management
 
-User question:
-"${question}"
-`;
-
-    const response = await openai.chat.completions.create({
-      model: "gpt-4.1",
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
+User question: ${question || "No extra question"}
+              `,
+            },
             {
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${base64Image}`,
-              },
+              type: "input_image",
+              image_url: `data:image/png;base64,${base64Image}`,
             },
           ],
         },
       ],
-      max_tokens: 800,
     });
 
-    return new Response(
-      JSON.stringify({
-        analysis: response.choices[0].message.content,
-      }),
-      { status: 200 }
-    );
+    const output =
+      response.output_text || "No analysis returned.";
+
+    return NextResponse.json({ analysis: output });
+
   } catch (error) {
-    console.error(error);
-    return new Response(
-      JSON.stringify({ analysis: "AI error. Try again." }),
+    console.error("AI ERROR:", error);
+    return NextResponse.json(
+      { analysis: "AI error. Try again." },
       { status: 500 }
     );
   }
