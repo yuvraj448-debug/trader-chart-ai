@@ -3,7 +3,7 @@ import Background from "./components/Background";
 
 export const metadata = {
   title: "Trader Chart AI",
-  description: "AI chart analysis for traders",
+  description: "AI-powered chart analysis",
 };
 
 export default function RootLayout({ children }) {
@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Background />
-        <main style={{ position: "relative", zIndex: 1 }}>
+        <main className="app-content">
           {children}
         </main>
       </body>
