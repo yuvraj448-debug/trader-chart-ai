@@ -1,104 +1,96 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
+import { useState } from "react";
 
 export default function Home() {
-  const [image, setImage] = useState(null)
-  const [question, setQuestion] = useState('')
-  const [result, setResult] = useState('')
-  const [displayText, setDisplayText] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [image, setImage] = useState(null);
+  const [question, setQuestion] = useState("");
+  const [followUp, setFollowUp] = useState("");
+  const [analysis, setAnalysis] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const submitAnalysis = async () => {
+  const submitAnalysis = async (isFollowUp = false) => {
     if (!image) {
-      alert('Upload a chart screenshot')
-      return
+      alert("Upload a chart screenshot first");
+      return;
     }
 
-    setLoading(true)
-    setResult('')
-    setDisplayText('')
+    setLoading(true);
 
-    const formData = new FormData()
-    formData.append('image', image)
-    formData.append('question', question)
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append(
+      "question",
+      isFollowUp ? followUp : question
+    );
+    formData.append("previous", analysis);
 
-    const res = await fetch('/api/analyze', {
-      method: 'POST',
+    const res = await fetch("/api/analyze", {
+      method: "POST",
       body: formData,
-    })
+    });
 
-    const data = await res.json()
-    setResult(data.analysis)
-    setLoading(false)
-  }
-
-  /* TYPING EFFECT */
-  useEffect(() => {
-    if (!result) return
-
-    let i = 0
-    const interval = setInterval(() => {
-      setDisplayText((prev) => prev + result[i])
-      i++
-      if (i >= result.length) clearInterval(interval)
-    }, 8)
-
-    return () => clearInterval(interval)
-  }, [result])
+    const data = await res.json();
+    setAnalysis(isFollowUp ? analysis + "\n\n" + data.analysis : data.analysis);
+    setFollowUp("");
+    setLoading(false);
+  };
 
   return (
-    <main className="relative min-h-screen flex flex-col items-center pt-24 px-4 z-10">
-
+    <main className="relative z-10 flex min-h-screen flex-col items-center justify-start px-4 pt-20 text-white">
       <h1 className="text-3xl font-bold mb-2">Trader Chart AI</h1>
-      <p className="text-gray-400 text-sm mb-8 text-center max-w-sm">
+      <p className="text-gray-400 mb-6 text-center">
         Upload any chart screenshot. Let AI read the market like a pro.
       </p>
 
-      <div className="analysis-box w-full max-w-md">
+      <div className="w-full max-w-xl bg-black/60 border border-white/10 rounded-2xl p-4 backdrop-blur">
         <input
           type="file"
           accept="image/*"
-          className="mb-3"
           onChange={(e) => setImage(e.target.files[0])}
+          className="mb-3 w-full"
         />
 
         <input
           type="text"
           placeholder="Ask anything about this chart (optional)..."
-          className="w-full bg-black border border-neutral-800 rounded-lg p-3 mb-4 text-sm outline-none"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
+          className="mb-3 w-full rounded-lg bg-black px-3 py-2 text-white outline-none border border-white/10"
         />
 
         <button
-          onClick={submitAnalysis}
+          onClick={() => submitAnalysis(false)}
+          className="w-full rounded-xl bg-white py-3 text-black font-semibold"
           disabled={loading}
-          className="w-full bg-white text-black py-3 rounded-lg font-semibold hover:opacity-90 transition"
         >
-          {loading ? 'Analyzing...' : 'Analyze Chart'}
+          {loading ? "Analyzing..." : "Analyze Chart"}
         </button>
-
-        {displayText && (
-          <div className="ai-result typing-caret">
-            {displayText}
-          </div>
-        )}
       </div>
 
-      {/* AI CORE */}
-      <div className="mt-24 flex flex-col items-center">
-        <div className="relative w-40 h-40">
-          <div className="absolute inset-0 bg-green-500 opacity-20 blur-3xl animate-pulse rounded-full"></div>
-          <div className="relative w-full h-full border border-green-400 rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+      {analysis && (
+        <div className="mt-6 w-full max-w-xl bg-black/70 border border-white/10 rounded-2xl p-4 whitespace-pre-wrap">
+          {analysis}
+
+          <div className="mt-4 border-t border-white/10 pt-4">
+            <input
+              type="text"
+              placeholder="Ask a follow-up about this chart..."
+              value={followUp}
+              onChange={(e) => setFollowUp(e.target.value)}
+              className="mb-2 w-full rounded-lg bg-black px-3 py-2 text-white outline-none border border-white/10"
+            />
+
+            <button
+              onClick={() => submitAnalysis(true)}
+              className="w-full rounded-xl bg-white py-2 text-black font-semibold"
+              disabled={loading}
+            >
+              {loading ? "Thinking..." : "Ask Follow-up"}
+            </button>
           </div>
         </div>
-
-        <p className="mt-6 text-xs text-green-400 tracking-wide animate-pulse">
-          AI is analyzing structure, liquidity, momentum & intent
-        </p>
-      </div>
+      )}
     </main>
-  )
+  );
 }
