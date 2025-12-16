@@ -22,7 +22,7 @@ export async function POST(req) {
     const base64Image = Buffer.from(bytes).toString("base64");
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+     model: "gpt-4o-mini",
       messages: [
         {
           role: "user",
