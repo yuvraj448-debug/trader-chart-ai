@@ -2,23 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Theme variables */
+/* ===============================
+   THEME VARIABLES
+================================ */
 :root {
-  --bg: #050505;
+  --bg: #000000;
   --card: #0b0b0b;
   --border: #1a1a1a;
   --text: #eaeaea;
   --muted: #9ca3af;
 }
 
-/* Global body */
+/* ===============================
+   GLOBAL RESET
+================================ */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* ===============================
+   BODY
+================================ */
 body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-inter), system-ui, sans-serif;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* AI Analysis Box */
+/* ===============================
+   INPUTS & BUTTONS
+================================ */
+input,
+textarea {
+  background: #050505;
+  border: 1px solid var(--border);
+  color: var(--text);
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+/* ===============================
+   BUTTON PRIMARY
+================================ */
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+/* ===============================
+   AI ANALYSIS BOX
+================================ */
 .analysis-box {
   background: linear-gradient(180deg, #0b0b0b, #070707);
   border: 1px solid var(--border);
@@ -28,4 +78,29 @@ body {
   font-size: 14px;
   line-height: 1.7;
   white-space: pre-wrap;
+}
+
+/* ===============================
+   STAR BACKGROUND CANVAS
+================================ */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ===============================
+   CONTENT LAYER
+================================ */
+.app-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* ===============================
+   SMOOTH SCROLL (MOBILE SAFE)
+================================ */
+html {
+  scroll-behavior: smooth;
 }
