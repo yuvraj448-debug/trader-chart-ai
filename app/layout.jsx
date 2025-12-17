@@ -4,9 +4,11 @@ import Background from "./components/Background";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-black text-white">
+      <body>
         <Background />
-        {children}
+        <div style={{ position: "relative", zIndex: 10 }}>
+          {children}
+        </div>
       </body>
     </html>
   );
