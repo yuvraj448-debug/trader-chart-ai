@@ -1,5 +1,11 @@
 import OpenAI from "openai";
 
+export const runtime = "nodejs"; // IMPORTANT
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 export async function POST(req) {
   try {
     const formData = await req.formData();
@@ -8,46 +14,47 @@ export async function POST(req) {
       formData.get("question") || "Analyze this trading chart.";
 
     if (!image) {
-      return new Response(
-        JSON.stringify({ error: "No image provided" }),
+      return Response.json(
+        { error: "No image provided" },
         { status: 400 }
       );
     }
 
     const buffer = Buffer.from(await image.arrayBuffer());
+    const base64Image = buffer.toString("base64");
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
+    const response = await client.responses.create({
+      model: "gpt-4.1-mini",
+      input: [
         {
           role: "user",
           content: [
-            { type: "text", text: question },
+            { type: "input_text", text: question },
             {
-              type: "image_url",
-              image_url: {
-                url: `data:image/png;base64,${buffer.toString("base64")}`,
-              },
+              type: "input_image",
+              image_base64: base64Image,
             },
           ],
         },
       ],
     });
 
-    return new Response(
-      JSON.stringify({
-        analysis: response.choices[0].message.content,
-      }),
-      { status: 200 }
-    );
+    const output =
+      response.output_text ||
+      "No analysis returned.";
+
+    return Response.json({ analysis: output });
+
   } catch (err) {
-    console.error("ANALYZE ERROR:", err);
-    return new Response(
-      JSON.stringify({ error: "AI error" }),
+    console.error("AI ERROR:", err);
+
+    // Prevent infinite loops
+    return Response.json(
+      {
+        error:
+          err?.message ||
+          "AI request failed. Try again later.",
+      },
       { status: 500 }
     );
   }
