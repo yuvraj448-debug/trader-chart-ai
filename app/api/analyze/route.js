@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 
-export const runtime = "nodejs"; // IMPORTANT
+export const runtime = "nodejs";
 
-const client = new OpenAI({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -21,18 +21,23 @@ export async function POST(req) {
     }
 
     const buffer = Buffer.from(await image.arrayBuffer());
-    const base64Image = buffer.toString("base64");
+    const base64 = buffer.toString("base64");
 
-    const response = await client.responses.create({
+    const response = await openai.responses.create({
       model: "gpt-4.1-mini",
       input: [
         {
           role: "user",
           content: [
-            { type: "input_text", text: question },
+            {
+              type: "input_text",
+              text: question,
+            },
             {
               type: "input_image",
-              image_base64: base64Image,
+              image_url: {
+                url: `data:image/png;base64,${base64}`,
+              },
             },
           ],
         },
@@ -43,17 +48,17 @@ export async function POST(req) {
       response.output_text ||
       "No analysis returned.";
 
-    return Response.json({ analysis: output });
+    return Response.json({
+      analysis: output,
+    });
+  } catch (error) {
+    console.error("AI ERROR:", error);
 
-  } catch (err) {
-    console.error("AI ERROR:", err);
-
-    // Prevent infinite loops
     return Response.json(
       {
         error:
-          err?.message ||
-          "AI request failed. Try again later.",
+          error?.message ||
+          "AI failed. Try again later.",
       },
       { status: 500 }
     );
