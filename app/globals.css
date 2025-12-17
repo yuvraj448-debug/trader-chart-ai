@@ -2,110 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ================= ROOT ================= */
-:root {
-  --bg: #050505;
-  --text: #eaeaea;
-  --accent: #22c55e;
-}
-
-/* ================= RESET ================= */
-* {
-  box-sizing: border-box;
-}
-
 html,
 body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: black;
+  color: white;
   min-height: 100%;
   overflow-x: hidden;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ================= CONTENT ================= */
-.app-content {
-  position: relative;
-  z-index: 2;
-}
-
-/* ================= BACKGROUND ================= */
-.bg-wrapper {
+/* STAR BACKGROUND */
+.stars {
   position: fixed;
   inset: 0;
   z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  background: radial-gradient(circle at center, #080808, #000);
-}
-
-/* ================= STARS ================= */
-.stars {
-  position: absolute;
-  inset: 0;
   background-image:
-    radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-    radial-gradient(1px 1px at 80% 40%, #fff, transparent),
-    radial-gradient(1px 1px at 30% 70%, #fff, transparent),
-    radial-gradient(1px 1px at 60% 10%, #fff, transparent),
-    radial-gradient(1px 1px at 90% 80%, #fff, transparent);
-  background-size: 400px 400px;
-  animation: starsMove 60s linear infinite;
-  opacity: 0.35;
+    radial-gradient(1px 1px at 20px 30px, white, transparent),
+    radial-gradient(1px 1px at 40px 70px, white, transparent),
+    radial-gradient(1px 1px at 130px 80px, white, transparent),
+    radial-gradient(1px 1px at 90px 120px, white, transparent);
+  background-size: 200px 200px;
+  animation: moveStars 60s linear infinite;
+  opacity: 0.4;
 }
 
-@keyframes starsMove {
+@keyframes moveStars {
   from {
-    transform: translateY(0);
+    background-position: 0 0;
   }
   to {
-    transform: translateY(-400px);
+    background-position: -1000px 1000px;
   }
-}
-
-/* ================= RINGS ================= */
-.rings {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 900px;
-  height: 900px;
-  transform: translate(-50%, -50%);
-  animation: rotateRings 80s linear infinite;
-}
-
-.rings circle {
-  fill: none;
-  stroke: #38bdf8;
-  stroke-width: 1.2;
-  opacity: 0.35;
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
-}
-
-@keyframes spinSlow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes spinReverse {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-.animate-spin-slow {
-  animation: spinSlow 60s linear infinite;
-}
-
-.animate-spin-reverse {
-  animation: spinReverse 90s linear infinite;
 }
