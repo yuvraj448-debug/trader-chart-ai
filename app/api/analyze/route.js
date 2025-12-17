@@ -1,11 +1,13 @@
 import OpenAI from "openai";
 
+export const runtime = "edge";
+
 export async function POST(req) {
   try {
     const formData = await req.formData();
     const image = formData.get("image");
     const question =
-      formData.get("question") || "Analyze this trading chart like a professional trader.";
+      formData.get("question") || "Analyze this trading chart.";
 
     if (!image) {
       return new Response(
@@ -14,40 +16,44 @@ export async function POST(req) {
       );
     }
 
-    // Convert image → base64 (Node compatible)
-    const buffer = Buffer.from(await image.arrayBuffer());
-    const base64Image = buffer.toString("base64");
+    const arrayBuffer = await image.arrayBuffer();
+    const base64Image = btoa(
+      String.fromCharCode(...new Uint8Array(arrayBuffer))
+    );
 
-    const openai = new OpenAI({
+    const client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: [
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
         {
           role: "user",
           content: [
+            { type: "text", text: question },
             {
-              type: "input_text",
-              text: question,
-            },
-            {
-              type: "input_image",
-              image_base64: base64Image,
+              type: "image_url",
+              image_url: {
+                url: `data:image/png;base64,${base64Image}`,
+              },
             },
           ],
         },
       ],
     });
 
-    const analysis =
-      response.output_text ||
-      "No analysis returned. Try again with a clearer chart.";
-
     return new Response(
-  JSON.stringify({
-    analysis: response.choices[0].message.content,
-  }),
-  { status: 200 }
-);
+      JSON.stringify({
+        analysis: response.choices[0].message.content,
+      }),
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error(err);
+    return new Response(
+      JSON.stringify({ error: "AI error" }),
+      { status: 500 }
+    );
+  }
+}
