@@ -1,7 +1,5 @@
 import OpenAI from "openai";
 
-
-
 export async function POST(req) {
   try {
     const formData = await req.formData();
@@ -16,10 +14,7 @@ export async function POST(req) {
       );
     }
 
-    const arrayBuffer = await image.arrayBuffer();
-    const base64Image = btoa(
-      String.fromCharCode(...new Uint8Array(arrayBuffer))
-    );
+    const buffer = Buffer.from(await image.arrayBuffer());
 
     const client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -35,7 +30,7 @@ export async function POST(req) {
             {
               type: "image_url",
               image_url: {
-                url: `data:image/png;base64,${base64Image}`,
+                url: `data:image/png;base64,${buffer.toString("base64")}`,
               },
             },
           ],
@@ -50,7 +45,7 @@ export async function POST(req) {
       { status: 200 }
     );
   } catch (err) {
-    console.error(err);
+    console.error("ANALYZE ERROR:", err);
     return new Response(
       JSON.stringify({ error: "AI error" }),
       { status: 500 }
