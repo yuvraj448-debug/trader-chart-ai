@@ -1,15 +1,17 @@
-import Hero from "./components/Hero";
-import Features from "./components/Features";
-import Pricing from "./components/Pricing";
-import Dashboard from "./components/Dashboard";
+const submitAnalysis = async () => {
+  setLoading(true);
 
-export default function Home() {
-  return (
-    <>
-      <Hero />
-      <Features />
-      <Pricing />
-      <Dashboard />
-    </>
-  );
-}
+  setTimeout(() => {
+    setAnalysis(`
+📊 AI Chart Analysis (Demo Mode)
+
+• Market Structure: Bullish
+• Liquidity: Resting below recent low
+• Bias: Wait for pullback to premium
+• Risk: Avoid chasing breakout
+
+⚠️ Live AI will be enabled shortly.
+    `);
+    setLoading(false);
+  }, 1500);
+};
