@@ -46,14 +46,8 @@ export async function POST(req) {
       "No analysis returned. Try again with a clearer chart.";
 
     return new Response(
-      JSON.stringify({ analysis }),
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("AI ANALYZE ERROR:", error);
-    return new Response(
-      JSON.stringify({ error: "AI analysis failed. Try again." }),
-      { status: 500 }
-    );
-  }
-}
+  JSON.stringify({
+    analysis: response.choices[0].message.content,
+  }),
+  { status: 200 }
+);
