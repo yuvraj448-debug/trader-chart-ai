@@ -1,14 +1,48 @@
 export default function Background() {
   return (
-    <div
-      className="fixed inset-0 -z-10 overflow-hidden pointer-events-none"
-      aria-hidden="true"
-    >
-      <div className="absolute inset-0 bg-black" />
+    <>
+      <div className="stars" />
 
-      {/* Rings */}
-      <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-400/40 animate-spin-slow" />
-      <div className="absolute left-1/2 top-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-400/20 animate-spin-reverse" />
-    </div>
+      {/* LIVE RINGS */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            width: 600,
+            height: 600,
+            borderRadius: "50%",
+            border: "1px solid rgba(0,255,255,0.3)",
+            position: "absolute",
+          }}
+        />
+        <div
+          style={{
+            width: 400,
+            height: 400,
+            borderRadius: "50%",
+            border: "1px solid rgba(0,255,255,0.2)",
+            position: "absolute",
+          }}
+        />
+        <div
+          style={{
+            width: 200,
+            height: 200,
+            borderRadius: "50%",
+            border: "1px solid rgba(0,255,255,0.15)",
+            position: "absolute",
+          }}
+        />
+      </div>
+    </>
   );
 }
