@@ -10,27 +10,7 @@ export default function Home() {
   const [analysis, setAnalysis] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 🔹 DEMO AI (TEMPORARY – NO API)
-  const submitAnalysis = () => {
-    setLoading(true);
-
-    setTimeout(() => {
-      setAnalysis(`
-📊 AI Chart Analysis (Demo Mode)
-
-• Market Structure: Bullish (higher highs & higher lows)
-• Liquidity: Sell-side liquidity resting below recent swing low
-• Bias: Look for pullback into premium zone before continuation
-• Session Context: Best confirmation during London / NY overlap
-• Risk Note: Avoid FOMO entries near highs
-
-⚠️ Live AI analysis will be enabled soon.
-      `);
-
-      setLoading(false);
-    }, 1500);
-  };
-
+  
   return (
     <>
       {/* HERO SECTION */}
