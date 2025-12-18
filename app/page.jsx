@@ -122,22 +122,28 @@ export default function Home() {
       <div className="stars3" />
 
       {/* HERO */}
-      <h1 className="text-4xl font-bold text-center z-10">
-        Trader Chart AI
-      </h1>
-      <p className="text-gray-400 text-center max-w-md mt-2 mb-12 z-10">
-        Upload any chart screenshot. Let AI read the market like a pro.
-      </p>
+      <div className="text-center max-w-3xl z-10">
+        <span className="inline-block mb-4 px-4 py-1 rounded-full text-sm bg-blue-500/10 text-blue-400">
+          ⚡ AI-Powered Chart Analysis
+        </span>
+        <h1 className="text-4xl md:text-5xl font-bold">
+          Trader Chart AI <span className="text-blue-400">Made Simple</span>
+        </h1>
+        <p className="text-gray-400 mt-4">
+          Upload any candlestick chart from Forex, Crypto, Commodities or Stocks
+          and get instant AI-powered insights.
+        </p>
+      </div>
 
-      {/* 📊 STATS CARDS */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mb-14 z-10">
+      {/* 📊 STATS */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mt-14 mb-20 z-10">
         <StatCard title="Countries" value="150+" />
         <StatCard title="Users" value="60K+" />
         <StatCard title="Win Rate" value="59%" />
         <StatCard title="Avg RR" value="1 : 1.69" />
       </div>
 
-      {/* UPLOAD BOX */}
+      {/* UPLOAD */}
       <div className="w-full max-w-md bg-neutral-900/80 backdrop-blur rounded-2xl p-6 shadow-lg z-10">
         <input
           type="file"
@@ -163,105 +169,123 @@ export default function Home() {
         </button>
       </div>
 
-      {/* ERROR */}
       {error && <div className="mt-6 text-yellow-400 z-10">{error}</div>}
 
       {/* AI RESPONSE */}
       {displayedText && (
         <div className="mt-12 w-full max-w-3xl bg-neutral-900/80 backdrop-blur rounded-2xl p-6 animate-fade-in z-10">
           <h2 className="text-xl font-semibold mb-4">📊 AI Chart Analysis</h2>
-
           <div className="text-gray-200 leading-relaxed whitespace-pre-wrap">
             {displayedText}
           </div>
 
-          {/* FOLLOW UP */}
           <div className="mt-6 border-t border-neutral-700 pt-4">
-            <h3 className="text-lg mb-2">💬 Ask a follow-up</h3>
-
             <input
               type="text"
-              placeholder="Example: Where is the best entry?"
+              placeholder="Ask a follow-up question…"
               value={followUp}
               onChange={(e) => setFollowUp(e.target.value)}
               className="w-full mb-3 px-4 py-2 rounded-lg bg-black border border-neutral-700"
             />
-
             <button
               onClick={handleFollowUp}
               disabled={loading}
-              className="bg-white text-black px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
+              className="bg-white text-black px-5 py-2 rounded-lg font-medium"
             >
-              {loading ? "🧠 Thinking..." : "Ask AI"}
+              Ask AI
             </button>
           </div>
         </div>
       )}
 
-      {/* 🎨 STYLES */}
+      {/* FEATURES */}
+      <Section title="Powerful AI Features">
+        <FeatureCard title="Beginner-Friendly" text="Upload a chart and get insights instantly." />
+        <FeatureCard title="Multi-Market Support" text="Forex, Stocks, Crypto & Commodities." />
+        <FeatureCard title="Any Timeframe" text="Scalping to swing trading." />
+        <FeatureCard title="Lightning Fast" text="Powered by advanced AI models." />
+        <FeatureCard title="Universal Upload" text="TradingView, MT4, MT5 screenshots." />
+        <FeatureCard title="Support & Resistance" text="AI-identified key price zones." />
+      </Section>
+
+      {/* WHO USES */}
+      <Section title="Who Uses Trader Chart AI">
+        <FeatureCard title="Retail Traders" />
+        <FeatureCard title="Technical Analysts" />
+        <FeatureCard title="Fund Managers" />
+        <FeatureCard title="Prop Traders" />
+        <FeatureCard title="Institutions" />
+        <FeatureCard title="Trading Teams" />
+      </Section>
+
+      {/* VALUES */}
+      <Section title="Our Values">
+        <FeatureCard title="Precision First" />
+        <FeatureCard title="AI Innovation" />
+        <FeatureCard title="User-Centric" />
+      </Section>
+
+      {/* CTA */}
+      <div className="mt-24 mb-20 max-w-3xl text-center bg-neutral-900/80 backdrop-blur rounded-2xl p-10 z-10">
+        <h2 className="text-3xl font-bold mb-3">
+          Ready to Transform Your Trading?
+        </h2>
+        <p className="text-gray-400 mb-6">
+          Join thousands of traders using AI to make smarter decisions.
+        </p>
+        <button className="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-xl font-semibold">
+          Start Free Trial
+        </button>
+      </div>
+
+      {/* STYLES */}
       <style jsx>{`
         .animate-fade-in {
           animation: fadeIn 0.6s ease-out;
         }
-
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(14px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
-        /* ⭐ STARS */
-        .stars,
-        .stars2,
-        .stars3 {
+        .stars,.stars2,.stars3 {
           position: fixed;
           inset: 0;
           pointer-events: none;
           z-index: 0;
-          background-repeat: repeat;
         }
-
-        .stars {
-          background-image: radial-gradient(2px 2px at 20px 30px, #fff 50%, transparent 51%);
-          background-size: 300px 300px;
-          opacity: 0.4;
-          animation: moveStars 120s linear infinite;
-        }
-
-        .stars2 {
-          background-image: radial-gradient(1.5px 1.5px at 100px 200px, #fff 50%, transparent 51%);
-          background-size: 400px 400px;
-          opacity: 0.25;
-          animation: moveStars 180s linear infinite;
-        }
-
-        .stars3 {
-          background-image: radial-gradient(1px 1px at 300px 400px, #fff 50%, transparent 51%);
-          background-size: 500px 500px;
-          opacity: 0.2;
-          animation: moveStars 240s linear infinite;
-        }
-
-        @keyframes moveStars {
-          from { transform: translateY(0); }
-          to { transform: translateY(-50%); }
-        }
+        .stars { background: radial-gradient(2px 2px at 20px 30px,#fff 50%,transparent 51%); opacity:.4; animation: move 120s linear infinite; }
+        .stars2 { background: radial-gradient(1.5px 1.5px at 100px 200px,#fff 50%,transparent 51%); opacity:.25; animation: move 180s linear infinite; }
+        .stars3 { background: radial-gradient(1px 1px at 300px 400px,#fff 50%,transparent 51%); opacity:.2; animation: move 240s linear infinite; }
+        @keyframes move { to { transform: translateY(-50%); } }
       `}</style>
     </main>
   );
 }
 
-/* 🔢 STAT CARD */
+/* COMPONENTS */
 function StatCard({ title, value }) {
   return (
-    <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-4 text-center shadow">
+    <div className="bg-neutral-900/80 rounded-xl p-4 text-center">
       <p className="text-gray-400 text-sm">{title}</p>
       <p className="text-2xl font-bold mt-1">{value}</p>
+    </div>
+  );
+}
+
+function Section({ title, children }) {
+  return (
+    <div className="w-full max-w-5xl mt-24 z-10">
+      <h2 className="text-3xl font-bold text-center mb-10">{title}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">{children}</div>
+    </div>
+  );
+}
+
+function FeatureCard({ title, text }) {
+  return (
+    <div className="bg-neutral-900/80 rounded-xl p-6 text-center">
+      <h3 className="font-semibold text-lg mb-2">{title}</h3>
+      {text && <p className="text-gray-400 text-sm">{text}</p>}
     </div>
   );
 }
