@@ -13,12 +13,13 @@ export default function Home() {
   const [image, setImage] = useState(null);
   const [question, setQuestion] = useState("");
   const [analysis, setAnalysis] = useState("");
+  const [displayedText, setDisplayedText] = useState("");
   const [followUp, setFollowUp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [loadingText, setLoadingText] = useState(loadingTexts[0]);
 
-  // loading text animation
+  /* 🔁 Loading text rotation */
   useEffect(() => {
     if (!loading) return;
     let i = 0;
@@ -29,6 +30,20 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [loading]);
 
+  /* ✨ Typing animation for AI text */
+  useEffect(() => {
+    if (!analysis) return;
+    let i = 0;
+    setDisplayedText("");
+    const interval = setInterval(() => {
+      i++;
+      setDisplayedText(analysis.slice(0, i));
+      if (i >= analysis.length) clearInterval(interval);
+    }, 10);
+    return () => clearInterval(interval);
+  }, [analysis]);
+
+  /* 🧠 MAIN ANALYZE */
   const handleAnalyze = async () => {
     if (!image) {
       setError("⚠️ Please upload a chart image first.");
@@ -38,6 +53,7 @@ export default function Home() {
     setLoading(true);
     setError("");
     setAnalysis("");
+    setDisplayedText("");
 
     try {
       const formData = new FormData();
@@ -52,10 +68,10 @@ export default function Home() {
         body: formData,
       });
 
-      if (!res.ok) throw new Error("AI request failed");
+      if (!res.ok) throw new Error();
 
       const data = await res.json();
-      setAnalysis(data.result);
+      setAnalysis(data.result || "No analysis returned.");
     } catch {
       setError("⚠️ AI analysis failed. Please try again.");
     } finally {
@@ -63,6 +79,7 @@ export default function Home() {
     }
   };
 
+  /* 💬 FOLLOW-UP */
   const handleFollowUp = async () => {
     if (!followUp.trim()) return;
 
@@ -71,11 +88,13 @@ export default function Home() {
 
     try {
       const formData = new FormData();
+
+      // 👇 IMPORTANT: attach image only if exists
       if (image) formData.append("image", image);
 
       formData.append(
         "question",
-        `Based on this previous analysis:\n${analysis}\n\nUser follow-up question:\n${followUp}`
+        `Previous analysis:\n${analysis}\n\nUser question:\n${followUp}`
       );
 
       const res = await fetch("/api/analyze", {
@@ -83,13 +102,13 @@ export default function Home() {
         body: formData,
       });
 
-      if (!res.ok) throw new Error("Follow-up failed");
+      if (!res.ok) throw new Error();
 
       const data = await res.json();
       setAnalysis((prev) => prev + "\n\n" + data.result);
       setFollowUp("");
     } catch {
-      setError("⚠️ Follow-up failed.");
+      setError("⚠️ Follow-up failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -137,14 +156,14 @@ export default function Home() {
       )}
 
       {/* AI RESPONSE */}
-      {analysis && (
+      {displayedText && (
         <div className="mt-10 w-full max-w-2xl bg-neutral-900 rounded-2xl p-6 animate-fade-in">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
             📊 AI Chart Analysis
           </h2>
 
           <div className="text-gray-200 leading-relaxed text-base whitespace-pre-wrap">
-            {analysis}
+            {displayedText}
           </div>
 
           {/* FOLLOW UP */}
@@ -170,7 +189,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* ANIMATION */}
       <style jsx>{`
         .animate-fade-in {
           animation: fadeIn 0.5s ease-out;
