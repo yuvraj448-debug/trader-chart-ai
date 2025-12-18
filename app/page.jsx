@@ -40,7 +40,7 @@ export default function Home() {
       i++;
       setDisplayedText(analysis.slice(0, i));
       if (i >= analysis.length) clearInterval(interval);
-    }, 12);
+    }, 10);
     return () => clearInterval(interval);
   }, [analysis]);
 
@@ -115,7 +115,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center px-4 pt-24 relative overflow-hidden">
-      {/* ⭐ STARS */}
+      {/* ⭐ STAR BACKGROUND */}
       <div className="stars" />
       <div className="stars2" />
       <div className="stars3" />
@@ -210,44 +210,52 @@ export default function Home() {
           }
         }
 
-        /* ⭐ STAR BACKGROUND */
+        /* ⭐ REAL STAR FIELD */
         .stars,
         .stars2,
         .stars3 {
           position: fixed;
           inset: 0;
-          background-repeat: repeat;
           pointer-events: none;
           z-index: 0;
         }
 
         .stars {
-          background-image: radial-gradient(2px 2px at 20px 30px, #fff 50%, transparent 51%);
-          background-size: 600px 600px;
-          animation: moveStars 120s linear infinite;
-          opacity: 0.35;
+          background-image:
+            radial-gradient(1px 1px at 20% 30%, #fff 100%, transparent),
+            radial-gradient(1px 1px at 40% 80%, #fff 100%, transparent),
+            radial-gradient(1px 1px at 70% 40%, #fff 100%, transparent),
+            radial-gradient(1px 1px at 90% 60%, #fff 100%, transparent);
+          background-size: 200px 200px;
+          opacity: 0.6;
+          animation: drift 120s linear infinite;
         }
 
         .stars2 {
-          background-image: radial-gradient(1.5px 1.5px at 200px 150px, #fff 50%, transparent 51%);
-          background-size: 800px 800px;
-          animation: moveStars 180s linear infinite;
-          opacity: 0.25;
+          background-image:
+            radial-gradient(1.5px 1.5px at 10% 20%, #fff 100%, transparent),
+            radial-gradient(1.5px 1.5px at 60% 70%, #fff 100%, transparent),
+            radial-gradient(1.5px 1.5px at 80% 30%, #fff 100%, transparent);
+          background-size: 300px 300px;
+          opacity: 0.4;
+          animation: drift 180s linear infinite;
         }
 
         .stars3 {
-          background-image: radial-gradient(1px 1px at 400px 300px, #fff 50%, transparent 51%);
-          background-size: 1000px 1000px;
-          animation: moveStars 240s linear infinite;
-          opacity: 0.2;
+          background-image:
+            radial-gradient(2px 2px at 30% 50%, #fff 100%, transparent),
+            radial-gradient(2px 2px at 75% 25%, #fff 100%, transparent);
+          background-size: 400px 400px;
+          opacity: 0.25;
+          animation: drift 240s linear infinite;
         }
 
-        @keyframes moveStars {
+        @keyframes drift {
           from {
             transform: translateY(0);
           }
           to {
-            transform: translateY(-50%);
+            transform: translateY(-1000px);
           }
         }
       `}</style>
