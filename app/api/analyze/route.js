@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 
-export const runtime = "nodejs";
+export const runtime = "nodejs"; // IMPORTANT (not edge)
 
-const openai = new OpenAI({
+const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -14,52 +14,41 @@ export async function POST(req) {
       formData.get("question") || "Analyze this trading chart.";
 
     if (!image) {
-      return Response.json(
-        { error: "No image provided" },
+      return new Response(
+        JSON.stringify({ error: "No image uploaded" }),
         { status: 400 }
       );
     }
 
     const buffer = Buffer.from(await image.arrayBuffer());
-    const base64 = buffer.toString("base64");
+    const base64Image = buffer.toString("base64");
 
-    const response = await openai.responses.create({
+    const response = await client.responses.create({
       model: "gpt-4.1-mini",
       input: [
         {
           role: "user",
           content: [
-            {
-              type: "input_text",
-              text: question,
-            },
+            { type: "input_text", text: question },
             {
               type: "input_image",
-              image_url: {
-                url: `data:image/png;base64,${base64}`,
-              },
+              image_base64: base64Image,
             },
           ],
         },
       ],
     });
 
-    const output =
-      response.output_text ||
-      "No analysis returned.";
-
-    return Response.json({
-      analysis: output,
-    });
-  } catch (error) {
-    console.error("AI ERROR:", error);
-
-    return Response.json(
-      {
-        error:
-          error?.message ||
-          "AI failed. Try again later.",
-      },
+    return new Response(
+      JSON.stringify({
+        analysis: response.output_text,
+      }),
+      { status: 200 }
+    );
+  } catch (err) {
+    console.error("AI ERROR:", err);
+    return new Response(
+      JSON.stringify({ error: "AI analysis failed" }),
       { status: 500 }
     );
   }
