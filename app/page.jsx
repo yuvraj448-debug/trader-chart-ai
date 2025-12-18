@@ -240,23 +240,45 @@ export default function Home() {
 
       {/* STYLES */}
       <style jsx>{`
+        html {
+          scroll-behavior: smooth;
+        }
+
         .animate-fade-in {
           animation: fadeIn 0.6s ease-out;
         }
+
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(14px); }
           to { opacity: 1; transform: translateY(0); }
         }
+
         .stars,.stars2,.stars3 {
           position: fixed;
           inset: 0;
           pointer-events: none;
           z-index: 0;
         }
-        .stars { background: radial-gradient(2px 2px at 20px 30px,#fff 50%,transparent 51%); opacity:.4; animation: move 120s linear infinite; }
-        .stars2 { background: radial-gradient(1.5px 1.5px at 100px 200px,#fff 50%,transparent 51%); opacity:.25; animation: move 180s linear infinite; }
-        .stars3 { background: radial-gradient(1px 1px at 300px 400px,#fff 50%,transparent 51%); opacity:.2; animation: move 240s linear infinite; }
-        @keyframes move { to { transform: translateY(-50%); } }
+
+        .stars {
+          background: radial-gradient(2px 2px at 20px 30px,#fff 50%,transparent 51%);
+          opacity:.4;
+          animation: move 120s linear infinite;
+        }
+        .stars2 {
+          background: radial-gradient(1.5px 1.5px at 100px 200px,#fff 50%,transparent 51%);
+          opacity:.25;
+          animation: move 180s linear infinite;
+        }
+        .stars3 {
+          background: radial-gradient(1px 1px at 300px 400px,#fff 50%,transparent 51%);
+          opacity:.2;
+          animation: move 240s linear infinite;
+        }
+
+        @keyframes move {
+          to { transform: translateY(-50%); }
+        }
       `}</style>
     </main>
   );
