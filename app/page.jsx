@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 
+/* 🔄 Loading texts */
 const loadingTexts = [
   "📊 Reading market structure...",
   "💧 Tracking liquidity pools...",
@@ -19,7 +20,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [loadingText, setLoadingText] = useState(loadingTexts[0]);
 
-  /* 🔁 Loading text rotation */
+  /* 🔁 Rotate loading text */
   useEffect(() => {
     if (!loading) return;
     let i = 0;
@@ -39,10 +40,11 @@ export default function Home() {
       i++;
       setDisplayedText(analysis.slice(0, i));
       if (i >= analysis.length) clearInterval(interval);
-    }, 10);
+    }, 12);
     return () => clearInterval(interval);
   }, [analysis]);
 
+  /* 🧠 ANALYZE */
   const handleAnalyze = async () => {
     if (!image) {
       setError("⚠️ Please upload a chart image first.");
@@ -78,8 +80,9 @@ export default function Home() {
     }
   };
 
+  /* 💬 FOLLOW UP */
   const handleFollowUp = async () => {
-    if (!followUp.trim()) return;
+    if (!followUp.trim() || !analysis) return;
 
     setLoading(true);
     setError("");
@@ -90,7 +93,7 @@ export default function Home() {
 
       formData.append(
         "question",
-        `Previous analysis:\n${analysis}\n\nUser question:\n${followUp}`
+        `Previous analysis:\n${analysis}\n\nFollow-up question:\n${followUp}`
       );
 
       const res = await fetch("/api/analyze", {
@@ -104,91 +107,93 @@ export default function Home() {
       setAnalysis((prev) => prev + "\n\n" + data.result);
       setFollowUp("");
     } catch {
-      setError("⚠️ Follow-up failed. Please try again.");
+      setError("⚠️ Follow-up failed (rate limit or API busy).");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="relative min-h-screen bg-black text-white flex flex-col items-center px-4 pt-24 overflow-hidden">
-      {/* ⭐ STARS BACKGROUND */}
-      <div className="stars"></div>
-      <div className="stars2"></div>
-      <div className="stars3"></div>
+    <main className="min-h-screen bg-black text-white flex flex-col items-center px-4 pt-24 relative overflow-hidden">
+      {/* ⭐ STARS */}
+      <div className="stars" />
+      <div className="stars2" />
+      <div className="stars3" />
 
-      {/* CONTENT */}
-      <div className="relative z-10 w-full flex flex-col items-center">
-        <h1 className="text-4xl font-bold mb-2 text-center">
-          Trader Chart AI
-        </h1>
-        <p className="text-gray-400 mb-10 text-center max-w-md">
-          Upload any chart screenshot. Let AI read the market like a pro.
-        </p>
+      {/* HERO */}
+      <h1 className="text-4xl font-bold mb-2 text-center z-10">
+        Trader Chart AI
+      </h1>
+      <p className="text-gray-400 mb-10 text-center max-w-md z-10">
+        Upload any chart screenshot. Let AI read the market like a pro.
+      </p>
 
-        <div className="w-full max-w-md bg-neutral-900/90 backdrop-blur rounded-2xl p-6 shadow-lg">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
-            className="mb-4 w-full text-sm"
-          />
+      {/* UPLOAD */}
+      <div className="w-full max-w-md bg-neutral-900/80 backdrop-blur rounded-2xl p-6 shadow-lg z-10">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="mb-4 w-full text-sm"
+        />
 
-          <input
-            type="text"
-            placeholder="Ask anything about this chart (optional)"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            className="w-full mb-4 px-4 py-2 rounded-lg bg-black border border-neutral-700 text-white"
-          />
+        <input
+          type="text"
+          placeholder="Ask anything about this chart (optional)"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className="w-full mb-4 px-4 py-2 rounded-lg bg-black border border-neutral-700 text-white"
+        />
 
-          <button
-            onClick={handleAnalyze}
-            disabled={loading}
-            className="w-full bg-white text-black font-semibold py-3 rounded-xl hover:opacity-90 transition"
-          >
-            {loading ? loadingText : "Analyze Chart"}
-          </button>
-        </div>
-
-        {error && (
-          <div className="mt-6 text-yellow-400">{error}</div>
-        )}
-
-        {displayedText && (
-          <div className="mt-10 w-full max-w-2xl bg-neutral-900/90 backdrop-blur rounded-2xl p-6 animate-fade-in">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              📊 AI Chart Analysis
-            </h2>
-
-            <div className="text-gray-200 leading-relaxed text-base whitespace-pre-wrap">
-              {displayedText}
-            </div>
-
-            <div className="mt-6 border-t border-neutral-700 pt-4">
-              <h3 className="text-lg mb-2">💬 Ask a follow-up</h3>
-
-              <input
-                type="text"
-                placeholder="Example: Where is the best entry?"
-                value={followUp}
-                onChange={(e) => setFollowUp(e.target.value)}
-                className="w-full mb-3 px-4 py-2 rounded-lg bg-black border border-neutral-700 text-white"
-              />
-
-              <button
-                onClick={handleFollowUp}
-                disabled={loading}
-                className="bg-white text-black px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
-              >
-                {loading ? "🧠 Thinking..." : "Ask AI"}
-              </button>
-            </div>
-          </div>
-        )}
+        <button
+          onClick={handleAnalyze}
+          disabled={loading}
+          className="w-full bg-white text-black font-semibold py-3 rounded-xl hover:opacity-90 transition"
+        >
+          {loading ? loadingText : "Analyze Chart"}
+        </button>
       </div>
 
-      {/* ✨ STYLES */}
+      {/* ERROR */}
+      {error && (
+        <div className="mt-6 text-yellow-400 z-10">{error}</div>
+      )}
+
+      {/* AI RESPONSE */}
+      {displayedText && (
+        <div className="mt-10 w-full max-w-2xl bg-neutral-900/80 backdrop-blur rounded-2xl p-6 animate-fade-in z-10">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            📊 AI Chart Analysis
+          </h2>
+
+          <div className="text-gray-200 leading-relaxed text-base whitespace-pre-wrap">
+            {displayedText}
+          </div>
+
+          {/* FOLLOW UP */}
+          <div className="mt-6 border-t border-neutral-700 pt-4">
+            <h3 className="text-lg mb-2">💬 Ask a follow-up</h3>
+
+            <input
+              type="text"
+              placeholder="Example: Where is the best entry?"
+              value={followUp}
+              onChange={(e) => setFollowUp(e.target.value)}
+              className="w-full mb-3 px-4 py-2 rounded-lg bg-black border border-neutral-700 text-white"
+            />
+
+            <button
+              onClick={handleFollowUp}
+              disabled={loading}
+              className="bg-white text-black px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
+            >
+              {loading ? "🧠 Thinking..." : "Ask AI"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🎨 STYLES */}
       <style jsx>{`
         .animate-fade-in {
           animation: fadeIn 0.5s ease-out;
@@ -205,36 +210,36 @@ export default function Home() {
           }
         }
 
+        /* ⭐ STAR BACKGROUND */
         .stars,
         .stars2,
         .stars3 {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
+          position: fixed;
+          inset: 0;
           background-repeat: repeat;
-          background-size: contain;
-          z-index: 0;
           pointer-events: none;
+          z-index: 0;
         }
 
         .stars {
-          background-image: radial-gradient(1px 1px at 20px 30px, white, transparent);
-          animation: moveStars 50s linear infinite;
-          opacity: 0.3;
+          background-image: radial-gradient(2px 2px at 20px 30px, #fff 50%, transparent 51%);
+          background-size: 600px 600px;
+          animation: moveStars 120s linear infinite;
+          opacity: 0.35;
         }
 
         .stars2 {
-          background-image: radial-gradient(1px 1px at 50px 80px, white, transparent);
-          animation: moveStars 100s linear infinite;
-          opacity: 0.2;
+          background-image: radial-gradient(1.5px 1.5px at 200px 150px, #fff 50%, transparent 51%);
+          background-size: 800px 800px;
+          animation: moveStars 180s linear infinite;
+          opacity: 0.25;
         }
 
         .stars3 {
-          background-image: radial-gradient(1px 1px at 90px 120px, white, transparent);
-          animation: moveStars 150s linear infinite;
-          opacity: 0.15;
+          background-image: radial-gradient(1px 1px at 400px 300px, #fff 50%, transparent 51%);
+          background-size: 1000px 1000px;
+          animation: moveStars 240s linear infinite;
+          opacity: 0.2;
         }
 
         @keyframes moveStars {
@@ -242,7 +247,7 @@ export default function Home() {
             transform: translateY(0);
           }
           to {
-            transform: translateY(-2000px);
+            transform: translateY(-50%);
           }
         }
       `}</style>
