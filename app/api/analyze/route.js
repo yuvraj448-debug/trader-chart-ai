@@ -2,10 +2,6 @@ import OpenAI from "openai";
 
 export const runtime = "nodejs";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(req) {
   try {
     const formData = await req.formData();
@@ -19,50 +15,56 @@ export async function POST(req) {
       );
     }
 
-    const bytes = await image.arrayBuffer();
-    const base64Image = Buffer.from(bytes).toString("base64");
+    const buffer = Buffer.from(await image.arrayBuffer());
+    const base64Image = buffer.toString("base64");
 
-    const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: [
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
         {
           role: "user",
           content: [
             {
-              type: "input_text",
+              type: "text",
               text: `
 You are an institutional forex trader.
-Analyze the uploaded chart using:
+Analyze the chart using:
 - Market structure
-- Liquidity (buy/sell side)
-- Premium/discount
-- Bias (bullish/bearish)
-- Session timing
+- Liquidity
+- Bias
+- Premium / Discount
+- Session context
 - Risk notes
 
 ${question}
               `,
             },
             {
-              type: "input_image",
-              image_base64: base64Image,
+              type: "image_url",
+              image_url: {
+                url: `data:image/png;base64,${base64Image}`,
+              },
             },
           ],
         },
       ],
+      max_tokens: 500,
     });
 
-    const output =
-      response.output_text || "No analysis returned.";
-
     return new Response(
-      JSON.stringify({ result: output }),
+      JSON.stringify({
+        result: completion.choices[0].message.content,
+      }),
       { status: 200 }
     );
-  } catch (error) {
-    console.error("AI ERROR:", error);
+  } catch (err) {
+    console.error("AI ERROR:", err);
     return new Response(
-      JSON.stringify({ error: "AI analysis failed" }),
+      JSON.stringify({ error: "AI failed" }),
       { status: 500 }
     );
   }
