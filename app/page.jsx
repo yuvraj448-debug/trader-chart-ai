@@ -1,51 +1,87 @@
 "use client";
 
 import { useState } from "react";
-import Hero from "./components/Hero";
-import Features from "./components/Features";
-import Pricing from "./components/Pricing";
-import Dashboard from "./components/Dashboard";
 
 export default function Home() {
+  const [image, setImage] = useState(null);
+  const [question, setQuestion] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [loading, setLoading] = useState(false);
 
-  
+  const submitAnalysis = async () => {
+    if (!image) {
+      alert("Please upload a chart image first.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setAnalysis("");
+
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("question", question || "Analyze this trading chart.");
+
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("AI request failed");
+      }
+
+      const data = await res.json();
+      setAnalysis(data.result);
+    } catch (err) {
+      setAnalysis("⚠️ AI analysis failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      {/* HERO SECTION */}
-      <Hero />
+    <main className="min-h-screen flex flex-col items-center justify-start px-4 pt-24 text-white bg-black">
+      {/* HERO */}
+      <h1 className="text-4xl font-bold mb-2 text-center">
+        Trader Chart AI
+      </h1>
+      <p className="text-gray-400 mb-8 text-center max-w-md">
+        Upload any chart screenshot. Let AI read the market like a pro.
+      </p>
 
       {/* ANALYZE CARD */}
-      <section className="relative z-10 mt-12 flex justify-center px-4">
-        <div className="w-full max-w-xl rounded-2xl border border-white/10 bg-black/60 p-4 backdrop-blur">
-          <button
-            onClick={submitAnalysis}
-            disabled={loading}
-            className="w-full rounded-xl bg-white py-3 text-black font-semibold"
-          >
-            {loading ? "Analyzing..." : "Analyze Chart"}
-          </button>
-        </div>
-      </section>
+      <div className="w-full max-w-xl bg-black/70 border border-white/10 rounded-2xl p-5 backdrop-blur">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="mb-4 w-full text-sm"
+        />
 
-      {/* ANALYSIS OUTPUT */}
+        <input
+          type="text"
+          placeholder="Ask anything about this chart (optional)"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className="mb-4 w-full rounded-lg bg-black px-3 py-2 text-white outline-none border border-white/10"
+        />
+
+        <button
+          onClick={submitAnalysis}
+          disabled={loading}
+          className="w-full rounded-xl bg-white py-3 text-black font-semibold hover:opacity-90 disabled:opacity-50"
+        >
+          {loading ? "Analyzing..." : "Analyze Chart"}
+        </button>
+      </div>
+
+      {/* RESULT */}
       {analysis && (
-        <section className="relative z-10 mt-6 flex justify-center px-4">
-          <div className="w-full max-w-xl whitespace-pre-wrap rounded-2xl border border-white/10 bg-black/70 p-4 text-white">
-            {analysis}
-          </div>
-        </section>
+        <div className="mt-6 w-full max-w-xl bg-black/70 border border-white/10 rounded-2xl p-5 whitespace-pre-wrap">
+          {analysis}
+        </div>
       )}
-
-      {/* WHY / FEATURES */}
-      <Features />
-
-      {/* PRICING */}
-      <Pricing />
-
-      {/* DASHBOARD PREVIEW */}
-      <Dashboard />
-    </>
+    </main>
   );
 }
