@@ -119,7 +119,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-black text-white overflow-hidden px-4 pt-24 flex flex-col items-center">
 
-      {/* ⭐ STAR BACKGROUND */}
+      {/* ⭐ STARS */}
       <div className="stars" />
       <div className="stars2" />
       <div className="stars3" />
@@ -138,7 +138,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* 📊 STATS */}
+      {/* STATS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mt-14 mb-20 z-10">
         <StatCard title="Countries" value="150+" />
         <StatCard title="Users" value="60K+" />
@@ -174,7 +174,61 @@ export default function Home() {
 
       {error && <div className="mt-6 text-yellow-400 z-10">{error}</div>}
 
-      {/* CTA */}
+      {/* AI RESPONSE */}
+      {displayedText && (
+        <div className="mt-12 w-full max-w-3xl bg-neutral-900/80 backdrop-blur rounded-2xl p-6 animate-fade-in z-10">
+          <h2 className="text-xl font-semibold mb-4">📊 AI Chart Analysis</h2>
+          <div className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+            {displayedText}
+          </div>
+
+          <div className="mt-6 border-t border-neutral-700 pt-4">
+            <input
+              type="text"
+              placeholder="Ask a follow-up question…"
+              value={followUp}
+              onChange={(e) => setFollowUp(e.target.value)}
+              className="w-full mb-3 px-4 py-2 rounded-lg bg-black border border-neutral-700"
+            />
+            <button
+              onClick={handleFollowUp}
+              disabled={loading}
+              className="bg-white text-black px-5 py-2 rounded-lg font-medium"
+            >
+              Ask AI
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* FEATURES */}
+      <Section title="Powerful AI Features">
+        <FeatureCard title="Beginner-Friendly" text="Upload a chart and get insights instantly." />
+        <FeatureCard title="Multi-Market Support" text="Forex, Stocks, Crypto & Commodities." />
+        <FeatureCard title="Any Timeframe" text="Scalping to swing trading." />
+        <FeatureCard title="Lightning Fast" text="Powered by advanced AI models." />
+        <FeatureCard title="Universal Upload" text="TradingView, MT4, MT5 screenshots." />
+        <FeatureCard title="Support & Resistance" text="AI-identified key price zones." />
+      </Section>
+
+      {/* WHO USES */}
+      <Section title="Who Uses Trader Chart AI">
+        <FeatureCard title="Retail Traders" />
+        <FeatureCard title="Technical Analysts" />
+        <FeatureCard title="Fund Managers" />
+        <FeatureCard title="Prop Traders" />
+        <FeatureCard title="Institutions" />
+        <FeatureCard title="Trading Teams" />
+      </Section>
+
+      {/* VALUES */}
+      <Section title="Our Values">
+        <FeatureCard title="Precision First" />
+        <FeatureCard title="AI Innovation" />
+        <FeatureCard title="User-Centric" />
+      </Section>
+
+      {/* FINAL CTA */}
       <div className="mt-24 mb-20 max-w-3xl text-center bg-neutral-900/80 backdrop-blur rounded-2xl p-10 z-10">
         <h2 className="text-3xl font-bold mb-3">
           Ready to Transform Your Trading?
@@ -194,6 +248,15 @@ export default function Home() {
       <style jsx>{`
         html { scroll-behavior: smooth; }
 
+        .animate-fade-in {
+          animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
         .stars,.stars2,.stars3 {
           position: fixed;
           inset: 0;
@@ -201,11 +264,25 @@ export default function Home() {
           z-index: 0;
         }
 
-        .stars { background: radial-gradient(2px 2px at 20px 30px,#fff 50%,transparent 51%); opacity:.4; animation: move 120s linear infinite; }
-        .stars2 { background: radial-gradient(1.5px 1.5px at 100px 200px,#fff 50%,transparent 51%); opacity:.25; animation: move 180s linear infinite; }
-        .stars3 { background: radial-gradient(1px 1px at 300px 400px,#fff 50%,transparent 51%); opacity:.2; animation: move 240s linear infinite; }
+        .stars {
+          background: radial-gradient(2px 2px at 20px 30px,#fff 50%,transparent 51%);
+          opacity:.4;
+          animation: move 120s linear infinite;
+        }
+        .stars2 {
+          background: radial-gradient(1.5px 1.5px at 100px 200px,#fff 50%,transparent 51%);
+          opacity:.25;
+          animation: move 180s linear infinite;
+        }
+        .stars3 {
+          background: radial-gradient(1px 1px at 300px 400px,#fff 50%,transparent 51%);
+          opacity:.2;
+          animation: move 240s linear infinite;
+        }
 
-        @keyframes move { to { transform: translateY(-50%); } }
+        @keyframes move {
+          to { transform: translateY(-50%); }
+        }
       `}</style>
     </main>
   );
@@ -217,6 +294,24 @@ function StatCard({ title, value }) {
     <div className="bg-neutral-900/80 rounded-xl p-4 text-center">
       <p className="text-gray-400 text-sm">{title}</p>
       <p className="text-2xl font-bold mt-1">{value}</p>
+    </div>
+  );
+}
+
+function Section({ title, children }) {
+  return (
+    <div className="w-full max-w-5xl mt-24 z-10">
+      <h2 className="text-3xl font-bold text-center mb-10">{title}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">{children}</div>
+    </div>
+  );
+}
+
+function FeatureCard({ title, text }) {
+  return (
+    <div className="bg-neutral-900/80 rounded-xl p-6 text-center">
+      <h3 className="font-semibold text-lg mb-2">{title}</h3>
+      {text && <p className="text-gray-400 text-sm">{text}</p>}
     </div>
   );
 }
