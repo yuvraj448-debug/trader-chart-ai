@@ -20,7 +20,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [loadingText, setLoadingText] = useState(loadingTexts[0]);
 
-  /* 🔁 Rotate loading text */
+  /* 🔁 Loading text rotation */
   useEffect(() => {
     if (!loading) return;
     let i = 0;
@@ -44,7 +44,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [analysis]);
 
-  /* 🧠 ANALYZE */
+  /* 🧠 MAIN ANALYSIS */
   const handleAnalyze = async () => {
     if (!image) {
       setError("⚠️ Please upload a chart image first.");
@@ -80,7 +80,7 @@ export default function Home() {
     }
   };
 
-  /* 💬 FOLLOW UP */
+  /* 💬 FOLLOW-UP */
   const handleFollowUp = async () => {
     if (!followUp.trim() || !analysis) return;
 
@@ -93,7 +93,7 @@ export default function Home() {
 
       formData.append(
         "question",
-        `Previous analysis:\n${analysis}\n\nFollow-up question:\n${followUp}`
+        `Previous analysis:\n${analysis}\n\nUser follow-up:\n${followUp}`
       );
 
       const res = await fetch("/api/analyze", {
@@ -107,28 +107,37 @@ export default function Home() {
       setAnalysis((prev) => prev + "\n\n" + data.result);
       setFollowUp("");
     } catch {
-      setError("⚠️ Follow-up failed (rate limit or API busy).");
+      setError("⚠️ Follow-up failed (rate limit / API busy).");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center px-4 pt-24 relative overflow-hidden">
+    <main className="relative min-h-screen bg-black text-white overflow-hidden px-4 pt-24 flex flex-col items-center">
+
       {/* ⭐ STAR BACKGROUND */}
       <div className="stars" />
       <div className="stars2" />
       <div className="stars3" />
 
       {/* HERO */}
-      <h1 className="text-4xl font-bold mb-2 text-center z-10">
+      <h1 className="text-4xl font-bold text-center z-10">
         Trader Chart AI
       </h1>
-      <p className="text-gray-400 mb-10 text-center max-w-md z-10">
+      <p className="text-gray-400 text-center max-w-md mt-2 mb-12 z-10">
         Upload any chart screenshot. Let AI read the market like a pro.
       </p>
 
-      {/* UPLOAD */}
+      {/* 📊 STATS CARDS */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mb-14 z-10">
+        <StatCard title="Countries" value="150+" />
+        <StatCard title="Users" value="60K+" />
+        <StatCard title="Win Rate" value="59%" />
+        <StatCard title="Avg RR" value="1 : 1.69" />
+      </div>
+
+      {/* UPLOAD BOX */}
       <div className="w-full max-w-md bg-neutral-900/80 backdrop-blur rounded-2xl p-6 shadow-lg z-10">
         <input
           type="file"
@@ -142,7 +151,7 @@ export default function Home() {
           placeholder="Ask anything about this chart (optional)"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          className="w-full mb-4 px-4 py-2 rounded-lg bg-black border border-neutral-700 text-white"
+          className="w-full mb-4 px-4 py-2 rounded-lg bg-black border border-neutral-700"
         />
 
         <button
@@ -155,18 +164,14 @@ export default function Home() {
       </div>
 
       {/* ERROR */}
-      {error && (
-        <div className="mt-6 text-yellow-400 z-10">{error}</div>
-      )}
+      {error && <div className="mt-6 text-yellow-400 z-10">{error}</div>}
 
       {/* AI RESPONSE */}
       {displayedText && (
-        <div className="mt-10 w-full max-w-2xl bg-neutral-900/80 backdrop-blur rounded-2xl p-6 animate-fade-in z-10">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            📊 AI Chart Analysis
-          </h2>
+        <div className="mt-12 w-full max-w-3xl bg-neutral-900/80 backdrop-blur rounded-2xl p-6 animate-fade-in z-10">
+          <h2 className="text-xl font-semibold mb-4">📊 AI Chart Analysis</h2>
 
-          <div className="text-gray-200 leading-relaxed text-base whitespace-pre-wrap">
+          <div className="text-gray-200 leading-relaxed whitespace-pre-wrap">
             {displayedText}
           </div>
 
@@ -179,7 +184,7 @@ export default function Home() {
               placeholder="Example: Where is the best entry?"
               value={followUp}
               onChange={(e) => setFollowUp(e.target.value)}
-              className="w-full mb-3 px-4 py-2 rounded-lg bg-black border border-neutral-700 text-white"
+              className="w-full mb-3 px-4 py-2 rounded-lg bg-black border border-neutral-700"
             />
 
             <button
@@ -196,13 +201,13 @@ export default function Home() {
       {/* 🎨 STYLES */}
       <style jsx>{`
         .animate-fade-in {
-          animation: fadeIn 0.5s ease-out;
+          animation: fadeIn 0.6s ease-out;
         }
 
         @keyframes fadeIn {
           from {
             opacity: 0;
-            transform: translateY(12px);
+            transform: translateY(14px);
           }
           to {
             opacity: 1;
@@ -210,7 +215,7 @@ export default function Home() {
           }
         }
 
-        /* ⭐ REAL STAR FIELD */
+        /* ⭐ STARS */
         .stars,
         .stars2,
         .stars3 {
@@ -218,47 +223,45 @@ export default function Home() {
           inset: 0;
           pointer-events: none;
           z-index: 0;
+          background-repeat: repeat;
         }
 
         .stars {
-          background-image:
-            radial-gradient(1px 1px at 20% 30%, #fff 100%, transparent),
-            radial-gradient(1px 1px at 40% 80%, #fff 100%, transparent),
-            radial-gradient(1px 1px at 70% 40%, #fff 100%, transparent),
-            radial-gradient(1px 1px at 90% 60%, #fff 100%, transparent);
-          background-size: 200px 200px;
-          opacity: 0.6;
-          animation: drift 120s linear infinite;
+          background-image: radial-gradient(2px 2px at 20px 30px, #fff 50%, transparent 51%);
+          background-size: 300px 300px;
+          opacity: 0.4;
+          animation: moveStars 120s linear infinite;
         }
 
         .stars2 {
-          background-image:
-            radial-gradient(1.5px 1.5px at 10% 20%, #fff 100%, transparent),
-            radial-gradient(1.5px 1.5px at 60% 70%, #fff 100%, transparent),
-            radial-gradient(1.5px 1.5px at 80% 30%, #fff 100%, transparent);
-          background-size: 300px 300px;
-          opacity: 0.4;
-          animation: drift 180s linear infinite;
+          background-image: radial-gradient(1.5px 1.5px at 100px 200px, #fff 50%, transparent 51%);
+          background-size: 400px 400px;
+          opacity: 0.25;
+          animation: moveStars 180s linear infinite;
         }
 
         .stars3 {
-          background-image:
-            radial-gradient(2px 2px at 30% 50%, #fff 100%, transparent),
-            radial-gradient(2px 2px at 75% 25%, #fff 100%, transparent);
-          background-size: 400px 400px;
-          opacity: 0.25;
-          animation: drift 240s linear infinite;
+          background-image: radial-gradient(1px 1px at 300px 400px, #fff 50%, transparent 51%);
+          background-size: 500px 500px;
+          opacity: 0.2;
+          animation: moveStars 240s linear infinite;
         }
 
-        @keyframes drift {
-          from {
-            transform: translateY(0);
-          }
-          to {
-            transform: translateY(-1000px);
-          }
+        @keyframes moveStars {
+          from { transform: translateY(0); }
+          to { transform: translateY(-50%); }
         }
       `}</style>
     </main>
+  );
+}
+
+/* 🔢 STAT CARD */
+function StatCard({ title, value }) {
+  return (
+    <div className="bg-neutral-900/80 backdrop-blur rounded-xl p-4 text-center shadow">
+      <p className="text-gray-400 text-sm">{title}</p>
+      <p className="text-2xl font-bold mt-1">{value}</p>
+    </div>
   );
 }
