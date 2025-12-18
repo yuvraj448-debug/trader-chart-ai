@@ -1,6 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const loadingTexts = [
+  "📊 Reading market structure...",
+  "💧 Tracking liquidity pools...",
+  "🧠 Analyzing smart money...",
+  "⏳ Waiting for confirmation...",
+];
 
 export default function Home() {
   const [image, setImage] = useState(null);
@@ -9,6 +16,18 @@ export default function Home() {
   const [followUp, setFollowUp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loadingText, setLoadingText] = useState(loadingTexts[0]);
+
+  // loading text animation
+  useEffect(() => {
+    if (!loading) return;
+    let i = 0;
+    const interval = setInterval(() => {
+      i = (i + 1) % loadingTexts.length;
+      setLoadingText(loadingTexts[i]);
+    }, 900);
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const handleAnalyze = async () => {
     if (!image) {
@@ -33,13 +52,11 @@ export default function Home() {
         body: formData,
       });
 
-      if (!res.ok) {
-        throw new Error("AI request failed");
-      }
+      if (!res.ok) throw new Error("AI request failed");
 
       const data = await res.json();
       setAnalysis(data.result);
-    } catch (err) {
+    } catch {
       setError("⚠️ AI analysis failed. Please try again.");
     } finally {
       setLoading(false);
@@ -47,20 +64,26 @@ export default function Home() {
   };
 
   const handleFollowUp = async () => {
-    if (!followUp || !analysis) return;
+    if (!followUp.trim()) return;
 
     setLoading(true);
+    setError("");
 
     try {
+      const formData = new FormData();
+      if (image) formData.append("image", image);
+
+      formData.append(
+        "question",
+        `Based on this previous analysis:\n${analysis}\n\nUser follow-up question:\n${followUp}`
+      );
+
       const res = await fetch("/api/analyze", {
         method: "POST",
-        body: JSON.stringify({
-          question: `Previous analysis:\n${analysis}\n\nFollow-up question:\n${followUp}`,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: formData,
       });
+
+      if (!res.ok) throw new Error("Follow-up failed");
 
       const data = await res.json();
       setAnalysis((prev) => prev + "\n\n" + data.result);
@@ -82,7 +105,7 @@ export default function Home() {
         Upload any chart screenshot. Let AI read the market like a pro.
       </p>
 
-      {/* UPLOAD BOX */}
+      {/* UPLOAD */}
       <div className="w-full max-w-md bg-neutral-900 rounded-2xl p-6 shadow-lg">
         <input
           type="file"
@@ -104,7 +127,7 @@ export default function Home() {
           disabled={loading}
           className="w-full bg-white text-black font-semibold py-3 rounded-xl hover:opacity-90 transition"
         >
-          {loading ? "Analyzing..." : "Analyze Chart"}
+          {loading ? loadingText : "Analyze Chart"}
         </button>
       </div>
 
@@ -120,7 +143,7 @@ export default function Home() {
             📊 AI Chart Analysis
           </h2>
 
-          <div className="text-gray-200 whitespace-pre-line leading-relaxed text-base">
+          <div className="text-gray-200 leading-relaxed text-base whitespace-pre-wrap">
             {analysis}
           </div>
 
@@ -141,21 +164,21 @@ export default function Home() {
               disabled={loading}
               className="bg-white text-black px-5 py-2 rounded-lg font-medium hover:opacity-90 transition"
             >
-              {loading ? "Thinking..." : "Ask AI"}
+              {loading ? "🧠 Thinking..." : "Ask AI"}
             </button>
           </div>
         </div>
       )}
 
-      {/* SIMPLE FADE ANIMATION */}
+      {/* ANIMATION */}
       <style jsx>{`
         .animate-fade-in {
-          animation: fadeIn 0.6s ease-out;
+          animation: fadeIn 0.5s ease-out;
         }
         @keyframes fadeIn {
           from {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(12px);
           }
           to {
             opacity: 1;
